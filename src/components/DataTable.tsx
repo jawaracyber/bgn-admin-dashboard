@@ -14,11 +14,21 @@ interface DataTableProps {
   data: any[];
 }
 
+const generateReffAttention = (index: number): string => {
+  const seed = index * 7919;
+  const rand = (Math.sin(seed) + 1) / 2;
+
+  if (rand < 0.35) return 'SS03';
+  if (rand < 0.60) return 'BS10';
+  return 'DD01';
+};
+
 const DataTable = ({ data }: DataTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [statusData, setStatusData] = useState<Record<number, string>>({});
+  const [reffAttentionData, setReffAttentionData] = useState<Record<number, string>>({});
   const itemsPerPage = 20;
 
   const handleStatusChange = (index: number, value: string) => {
@@ -120,6 +130,14 @@ const DataTable = ({ data }: DataTableProps) => {
               const globalIndex = startIndex + index;
               const currentStatus = statusData[globalIndex] || "PENDING UPDATE";
               const showReffAttention = currentStatus === "Approved Kuota" || currentStatus === "Approved Coordinate";
+
+              if (!reffAttentionData[globalIndex]) {
+                setReffAttentionData(prev => ({
+                  ...prev,
+                  [globalIndex]: generateReffAttention(globalIndex)
+                }));
+              }
+              const reffAttention = reffAttentionData[globalIndex] || generateReffAttention(globalIndex);
               
               return (
                 <tr
@@ -160,7 +178,7 @@ const DataTable = ({ data }: DataTableProps) => {
                     {showReffAttention && (
                       <div className="flex items-center gap-2">
                         <Award className="w-5 h-5 text-chart-blue" />
-                        <span className="text-sm font-bold text-foreground">PR07</span>
+                        <span className="text-sm font-bold text-foreground">{reffAttention}</span>
                       </div>
                     )}
                   </td>
