@@ -74,7 +74,7 @@ const DataTable = ({ data }: DataTableProps) => {
         <table className="w-full">
           <thead className="bg-muted/50">
             <tr>
-              {["ID SPPG", "Status Pengajuan", "Status Operasional", "Kota / Kabupaten", "Provinsi"].map((header) => (
+              {["ID SPPG", "Status Pengajuan", "Kota / Kabupaten", "Provinsi"].map((header) => (
                 <th
                   key={header}
                   className="px-6 py-4 text-left text-sm font-semibold text-foreground cursor-pointer hover:bg-muted/80 transition-colors"
@@ -99,17 +99,6 @@ const DataTable = ({ data }: DataTableProps) => {
                 </td>
                 <td className="px-6 py-4 text-sm text-muted-foreground">
                   {row["Status Pengajuan"]}
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                      row["Status Operasional"] === "Beroperasi"
-                        ? "bg-success/10 text-success"
-                        : "bg-destructive/10 text-destructive"
-                    }`}
-                  >
-                    {row["Status Operasional"]}
-                  </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-muted-foreground">
                   {row["Kota / Kabupaten"]}
