@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import DataTable from "@/components/DataTable";
+import { SPPGDataGrid, type SPPGRow } from "@/components/SPPGDataGrid";
 import { AddSPPGDialog } from "@/components/AddSPPGDialog";
 import { supabase, type SPPGData } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const SPPG = () => {
-  const [sppgData, setSppgData] = useState<any[]>([]);
+  const [sppgData, setSppgData] = useState<SPPGRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadSPPGData = async () => {
@@ -20,13 +20,12 @@ const SPPG = () => {
       if (error) throw error;
 
       const formattedData = (data || []).map((item: SPPGData) => ({
-        "ID SPPG": item.id,
-        "Kota / Kabupaten": item.kota_kabupaten,
-        "Kecamatan": item.kecamatan,
-        "Provinsi": item.provinsi,
-        "Status Pengajuan": item.prog_stat,
-        "Reff Attention": item.reff_attention,
-        "Alamat": item.alamat,
+        id: item.id,
+        prog_stat: item.prog_stat || "Menunggu Update",
+        status: item.status || "-",
+        kota_kabupaten: item.kota_kabupaten,
+        provinsi: item.provinsi,
+        alamat: item.alamat || "-",
       }));
 
       setSppgData(formattedData);
@@ -75,7 +74,7 @@ const SPPG = () => {
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <DataTable data={sppgData} onStatusUpdate={loadSPPGData} />
+        <SPPGDataGrid data={sppgData} onStatusUpdate={loadSPPGData} />
       )}
     </div>
   );
