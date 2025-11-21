@@ -29,6 +29,7 @@ export interface SPPGRow {
   kota_kabupaten: string;
   provinsi: string;
   alamat: string;
+  reff_attention: string;
 }
 
 interface SPPGDataGridProps {
@@ -37,14 +38,14 @@ interface SPPGDataGridProps {
 }
 
 const getStatusColor = (status: string) => {
-  switch (status) {
-    case "Koordinat Disetujui":
+  const upperStatus = status.toUpperCase();
+  switch (upperStatus) {
+    case "APPROVED":
+    case "APPROVED KUOTA":
       return "bg-[#bbf7d0] text-green-800";
-    case "Dalam Pertimbangan":
-      return "bg-[#fef9c3] text-yellow-800";
-    case "Koordinat Ditolak":
+    case "REJECT":
+    case "ON HOLD":
       return "bg-[#fecaca] text-red-800";
-    case "Menunggu Update":
     case "PENDING UPDATE":
     default:
       return "bg-[#f1f5f9] text-slate-600";
@@ -129,28 +130,30 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
         );
       },
       cell: ({ row }) => {
-        const status = (row.getValue("prog_stat") as string) || "Menunggu Update";
-        const displayStatus = status === "PENDING UPDATE" ? "Menunggu Update" : status;
+        const status = (row.getValue("prog_stat") as string) || "PENDING UPDATE";
         return (
           <Select
-            value={displayStatus}
+            value={status}
             onValueChange={(value) => handleStatusChange(row.original.id, value, onStatusUpdate)}
           >
             <SelectTrigger className={`w-[180px] border rounded-md shadow-sm text-sm ${getStatusColor(status)}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-md shadow-md border z-50">
-              <SelectItem value="Menunggu Update" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
-                Menunggu Update
+              <SelectItem value="PENDING UPDATE" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
+                PENDING UPDATE
               </SelectItem>
-              <SelectItem value="Koordinat Disetujui" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
-                Koordinat Disetujui
+              <SelectItem value="APPROVED" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
+                APPROVED
               </SelectItem>
-              <SelectItem value="Koordinat Ditolak" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
-                Koordinat Ditolak
+              <SelectItem value="APPROVED KUOTA" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
+                APPROVED KUOTA
               </SelectItem>
-              <SelectItem value="Dalam Pertimbangan" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
-                Dalam Pertimbangan
+              <SelectItem value="ON HOLD" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
+                ON HOLD
+              </SelectItem>
+              <SelectItem value="REJECT" className="cursor-pointer hover:bg-slate-100 text-sm py-1.5">
+                REJECT
               </SelectItem>
             </SelectContent>
           </Select>
@@ -224,6 +227,29 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => (
         <div className="text-muted-foreground max-w-xs truncate">{row.getValue("alamat") || "-"}</div>
+      ),
+    },
+    {
+      accessorKey: "reff_attention",
+      header: ({ column }) => {
+        return (
+          <div
+            className="flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Refferal Strategic
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="w-4 h-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ArrowDown className="w-4 h-4" />
+            ) : (
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+            )}
+          </div>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="text-muted-foreground">{row.getValue("reff_attention") || "-"}</div>
       ),
     },
   ];

@@ -1,45 +1,41 @@
-import { useState, useEffect } from "react";
 import { SPPGDataGrid, type SPPGRow } from "@/components/SPPGDataGrid";
 import { AddSPPGDialog } from "@/components/AddSPPGDialog";
 import { supabase, type SPPGData } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const fetchSPPGData = async (): Promise<SPPGRow[]> => {
+  const { data, error } = await supabase
+    .from('sppg')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+
+  return (data || []).map((item: SPPGData) => ({
+    id: item.id,
+    prog_stat: item.prog_stat || "PENDING UPDATE",
+    kota_kabupaten: item.kota_kabupaten,
+    provinsi: item.provinsi,
+    alamat: item.alamat || "-",
+    reff_attention: item.reff_attention || "-",
+  }));
+};
 
 const SPPG = () => {
-  const [sppgData, setSppgData] = useState<SPPGRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const loadSPPGData = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('sppg')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const { data: sppgData = [], isLoading: loading } = useQuery({
+    queryKey: ['sppg-data'],
+    queryFn: fetchSPPGData,
+    refetchOnWindowFocus: true,
+  });
 
-      if (error) throw error;
-
-      const formattedData = (data || []).map((item: SPPGData) => ({
-        id: item.id,
-        prog_stat: item.prog_stat,
-        status: item.status || "-",
-        kota_kabupaten: item.kota_kabupaten,
-        provinsi: item.provinsi,
-        alamat: item.alamat || "-",
-      }));
-
-      setSppgData(formattedData);
-    } catch (error) {
-      toast.error('Gagal memuat data SPPG');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+  const handleStatusUpdate = () => {
+    queryClient.invalidateQueries({ queryKey: ['sppg-data'] });
+    toast.success('Data berhasil dimuat ulang');
   };
-
-  useEffect(() => {
-    loadSPPGData();
-  }, []);
 
   return (
     <div className="space-y-6">
@@ -48,7 +44,7 @@ const SPPG = () => {
           <h1 className="text-3xl font-bold text-foreground mb-2">Data SPPG</h1>
           <p className="text-muted-foreground">Sistem Pengelolaan dan Pemantauan SPPG Nasional</p>
         </div>
-        <AddSPPGDialog onSuccess={loadSPPGData} />
+        <AddSPPGDialog onSuccess={handleStatusUpdate} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -74,7 +70,7 @@ const SPPG = () => {
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <SPPGDataGrid data={sppgData} onStatusUpdate={loadSPPGData} />
+        <SPPGDataGrid data={sppgData} onStatusUpdate={handleStatusUpdate} />
       )}
     </div>
   );
