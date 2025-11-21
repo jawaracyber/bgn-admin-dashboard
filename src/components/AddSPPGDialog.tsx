@@ -14,9 +14,12 @@ interface AddSPPGDialogProps {
 }
 
 const generateSPPGId = () => {
-  const timestamp = Date.now().toString(36);
-  const random = Math.random().toString(36).substring(2, 7);
-  return `SPPG-${timestamp}-${random}`.toUpperCase();
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 };
 
 export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
