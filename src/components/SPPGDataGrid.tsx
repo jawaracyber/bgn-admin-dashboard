@@ -26,7 +26,6 @@ import { toast } from "sonner";
 export interface SPPGRow {
   id: string;
   prog_stat: string;
-  status: string;
   kota_kabupaten: string;
   provinsi: string;
   alamat: string;
@@ -157,29 +156,6 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
           </Select>
         );
       },
-    },
-    {
-      accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <div
-            className="flex items-center gap-2 cursor-pointer select-none"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Status Operasional
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
-            ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-            )}
-          </div>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="text-muted-foreground">{row.getValue("status") || "-"}</div>
-      ),
     },
     {
       accessorKey: "kota_kabupaten",
