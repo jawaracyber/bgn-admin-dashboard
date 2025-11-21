@@ -25,6 +25,7 @@ const SPPG = () => {
         "Kecamatan": item.kecamatan,
         "Provinsi": item.provinsi,
         "Status": item.status,
+        "Reff Attention": item.reff_attention,
         "Alamat": item.alamat,
       }));
 

@@ -2,38 +2,18 @@ import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Search, ArrowUpDown, Award } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface DataTableProps {
   data: any[];
 }
 
-const generateReffAttention = (index: number): string => {
-  const seed = index * 7919;
-  const rand = (Math.sin(seed) + 1) / 2;
-
-  if (rand < 0.35) return 'SS03';
-  if (rand < 0.60) return 'BS10';
-  return 'DD01';
-};
 
 const DataTable = ({ data }: DataTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-  const [statusData, setStatusData] = useState<Record<number, string>>({});
-  const [reffAttentionData, setReffAttentionData] = useState<Record<number, string>>({});
   const itemsPerPage = 20;
 
-  const handleStatusChange = (index: number, value: string) => {
-    setStatusData(prev => ({ ...prev, [index]: value }));
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -127,17 +107,9 @@ const DataTable = ({ data }: DataTableProps) => {
           </thead>
           <tbody>
             {currentData.map((row, index) => {
-              const globalIndex = startIndex + index;
-              const currentStatus = statusData[globalIndex] || "PENDING UPDATE";
+              const currentStatus = row["Status"] || "PENDING UPDATE";
+              const reffAttention = row["Reff Attention"] || "-";
               const isApproved = currentStatus === "Approved Kuota" || currentStatus === "Approved Coordinate";
-
-              if (!reffAttentionData[globalIndex]) {
-                setReffAttentionData(prev => ({
-                  ...prev,
-                  [globalIndex]: generateReffAttention(globalIndex)
-                }));
-              }
-              const reffAttention = reffAttentionData[globalIndex] || generateReffAttention(globalIndex);
 
               return (
                 <tr
@@ -148,31 +120,9 @@ const DataTable = ({ data }: DataTableProps) => {
                     {row["ID SPPG"]}
                   </td>
                   <td className="px-6 py-4">
-                    <Select
-                      value={currentStatus}
-                      onValueChange={(value) => handleStatusChange(globalIndex, value)}
-                    >
-                      <SelectTrigger className={`w-[180px] border ${getStatusColor(currentStatus)}`}>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card border-border z-50">
-                        <SelectItem value="PENDING UPDATE" className="bg-muted/50 text-muted-foreground">
-                          PENDING UPDATE
-                        </SelectItem>
-                        <SelectItem value="Waiting Review" className="text-chart-yellow">
-                          Waiting Review
-                        </SelectItem>
-                        <SelectItem value="Rejected" className="text-chart-red">
-                          Rejected
-                        </SelectItem>
-                        <SelectItem value="Approved Kuota" className="text-chart-teal">
-                          Approved Kuota
-                        </SelectItem>
-                        <SelectItem value="Approved Coordinate" className="text-chart-blue">
-                          Approved Coordinate
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className={`inline-flex px-3 py-1.5 rounded-md border text-sm font-medium ${getStatusColor(currentStatus)}`}>
+                      {currentStatus}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md ${isApproved ? 'bg-green-500/20 border border-green-500/30' : ''}`}>
