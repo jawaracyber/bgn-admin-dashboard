@@ -107,7 +107,7 @@ const DataTable = ({ data }: DataTableProps) => {
           </thead>
           <tbody>
             {currentData.map((row, index) => {
-              const currentStatus = row["Status"] || "PENDING UPDATE";
+              const currentStatus = row["Status Pengajuan"] || "PENDING UPDATE";
               const reffAttention = row["Reff Attention"] || "-";
               const isApproved = currentStatus === "Approved Kuota" || currentStatus === "Approved Coordinate";
 

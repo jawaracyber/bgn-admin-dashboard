@@ -24,7 +24,7 @@ const SPPG = () => {
         "Kota / Kabupaten": item.kota_kabupaten,
         "Kecamatan": item.kecamatan,
         "Provinsi": item.provinsi,
-        "Status": item.status,
+        "Status Pengajuan": item.prog_stat,
         "Reff Attention": item.reff_attention,
         "Alamat": item.alamat,
       }));
