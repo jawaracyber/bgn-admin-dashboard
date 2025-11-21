@@ -21,7 +21,7 @@ const SPPG = () => {
 
       const formattedData = (data || []).map((item: SPPGData) => ({
         id: item.id,
-        prog_stat: item.prog_stat || "Menunggu Update",
+        prog_stat: item.prog_stat,
         status: item.status || "-",
         kota_kabupaten: item.kota_kabupaten,
         provinsi: item.provinsi,

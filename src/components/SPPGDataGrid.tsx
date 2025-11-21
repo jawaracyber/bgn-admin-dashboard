@@ -46,6 +46,7 @@ const getStatusColor = (status: string) => {
     case "Koordinat Ditolak":
       return "bg-[#fecaca] text-red-800";
     case "Menunggu Update":
+    case "PENDING UPDATE":
     default:
       return "bg-[#f1f5f9] text-slate-600";
   }
@@ -129,10 +130,11 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
         );
       },
       cell: ({ row }) => {
-        const status = row.getValue("prog_stat") as string || "Menunggu Update";
+        const status = (row.getValue("prog_stat") as string) || "Menunggu Update";
+        const displayStatus = status === "PENDING UPDATE" ? "Menunggu Update" : status;
         return (
           <Select
-            value={status}
+            value={displayStatus}
             onValueChange={(value) => handleStatusChange(row.original.id, value, onStatusUpdate)}
           >
             <SelectTrigger className={`w-[180px] border rounded-md shadow-sm text-sm ${getStatusColor(status)}`}>
