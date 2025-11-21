@@ -75,7 +75,7 @@ const SPPG = () => {
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <DataTable data={sppgData} />
+        <DataTable data={sppgData} onStatusUpdate={loadSPPGData} />
       )}
     </div>
   );
