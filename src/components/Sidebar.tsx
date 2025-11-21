@@ -17,8 +17,8 @@ const Sidebar = () => {
             <span className="text-sidebar-primary-foreground font-bold text-lg">B</span>
           </div>
           <div>
-            <h2 className="font-bold text-sidebar-foreground">BGN Portal</h2>
-            <p className="text-xs text-sidebar-foreground/70">Dashboard v1.0</p>
+            <h2 className="font-bold text-sidebar-foreground">S.U BGN</h2>
+            <p className="text-xs text-sidebar-foreground/70">SUPER USER ACCESS V 1.3.1</p>
           </div>
         </div>
       </div>
