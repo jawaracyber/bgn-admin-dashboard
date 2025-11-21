@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Loader2 } from 'lucide-react';
 import { supabase, type SPPGData } from '@/lib/supabase';
-import { regionApi, type Province, type Regency } from '@/services/regionApi';
+import { regionApi, type Province, type Regency, type District } from '@/services/regionApi';
 import { toast } from 'sonner';
 
 interface AddSPPGDialogProps {
@@ -24,8 +24,10 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [regencies, setRegencies] = useState<Regency[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
   const [loadingProvinces, setLoadingProvinces] = useState(false);
   const [loadingRegencies, setLoadingRegencies] = useState(false);
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
 
   const [formData, setFormData] = useState({
     id: generateSPPGId(),
@@ -33,6 +35,8 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
     provinsi: '',
     provinsi_id: '',
     kota_kabupaten: '',
+    kota_kabupaten_id: '',
+    kecamatan: '',
     alamat: '',
     status: 'Aktif',
   });
@@ -70,6 +74,19 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
     }
   };
 
+  const loadDistricts = async (regencyId: string) => {
+    setLoadingDistricts(true);
+    try {
+      const data = await regionApi.getDistricts(regencyId);
+      setDistricts(data);
+    } catch (error) {
+      toast.error('Gagal memuat data kecamatan');
+      console.error(error);
+    } finally {
+      setLoadingDistricts(false);
+    }
+  };
+
   const handleProvinceChange = (value: string) => {
     const province = provinces.find(p => p.name === value);
     if (province) {
@@ -77,17 +94,34 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
         ...prev,
         provinsi: value,
         provinsi_id: province.id,
-        kota_kabupaten: ''
+        kota_kabupaten: '',
+        kota_kabupaten_id: '',
+        kecamatan: ''
       }));
       setRegencies([]);
+      setDistricts([]);
       loadRegencies(province.id);
+    }
+  };
+
+  const handleRegencyChange = (value: string) => {
+    const regency = regencies.find(r => r.name === value);
+    if (regency) {
+      setFormData(prev => ({
+        ...prev,
+        kota_kabupaten: value,
+        kota_kabupaten_id: regency.id,
+        kecamatan: ''
+      }));
+      setDistricts([]);
+      loadDistricts(regency.id);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.nama_sppg || !formData.provinsi || !formData.kota_kabupaten) {
+    if (!formData.nama_sppg || !formData.provinsi || !formData.kota_kabupaten || !formData.kecamatan) {
       toast.error('Mohon lengkapi semua field yang wajib diisi');
       return;
     }
@@ -99,6 +133,7 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
         nama_sppg: formData.nama_sppg,
         provinsi: formData.provinsi,
         kota_kabupaten: formData.kota_kabupaten,
+        kecamatan: formData.kecamatan,
         alamat: formData.alamat,
         status: formData.status,
       };
@@ -117,6 +152,8 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
         provinsi: '',
         provinsi_id: '',
         kota_kabupaten: '',
+        kota_kabupaten_id: '',
+        kecamatan: '',
         alamat: '',
         status: 'Aktif',
       });
@@ -199,7 +236,7 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
               </Label>
               <Select
                 value={formData.kota_kabupaten}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, kota_kabupaten: value }))}
+                onValueChange={handleRegencyChange}
                 disabled={!formData.provinsi || loadingRegencies}
               >
                 <SelectTrigger>
@@ -213,6 +250,32 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
                   {regencies.map((regency) => (
                     <SelectItem key={regency.id} value={regency.name}>
                       {regency.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kecamatan">
+                Kecamatan <span className="text-destructive">*</span>
+              </Label>
+              <Select
+                value={formData.kecamatan}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, kecamatan: value }))}
+                disabled={!formData.kota_kabupaten || loadingDistricts}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={
+                    loadingDistricts ? "Memuat..." :
+                    !formData.kota_kabupaten ? "Pilih kota/kabupaten terlebih dahulu" :
+                    "Pilih kecamatan"
+                  } />
+                </SelectTrigger>
+                <SelectContent>
+                  {districts.map((district) => (
+                    <SelectItem key={district.id} value={district.name}>
+                      {district.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -22,6 +22,7 @@ const SPPG = () => {
       const formattedData = (data || []).map((item: SPPGData) => ({
         "ID SPPG": item.id,
         "Kota / Kabupaten": item.kota_kabupaten,
+        "Kecamatan": item.kecamatan,
         "Provinsi": item.provinsi,
         "Status": item.status,
         "Alamat": item.alamat,

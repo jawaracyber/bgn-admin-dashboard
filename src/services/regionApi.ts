@@ -9,6 +9,12 @@ export interface Regency {
   name: string;
 }
 
+export interface District {
+  id: string;
+  regency_id: string;
+  name: string;
+}
+
 const API_BASE_URL = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
 export const regionApi = {
@@ -24,6 +30,14 @@ export const regionApi = {
     const response = await fetch(`${API_BASE_URL}/regencies/${provinceId}.json`);
     if (!response.ok) {
       throw new Error('Failed to fetch regencies');
+    }
+    return response.json();
+  },
+
+  async getDistricts(regencyId: string): Promise<District[]> {
+    const response = await fetch(`${API_BASE_URL}/districts/${regencyId}.json`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch districts');
     }
     return response.json();
   },

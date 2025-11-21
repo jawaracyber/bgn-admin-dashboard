@@ -13,6 +13,7 @@ export interface SPPGData {
   id: string;
   nama_sppg: string;
   kota_kabupaten: string;
+  kecamatan: string;
   provinsi: string;
   alamat?: string;
   status?: string;
