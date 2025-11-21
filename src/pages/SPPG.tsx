@@ -26,6 +26,7 @@ const SPPG = () => {
         "Provinsi": item.provinsi,
         "Status": item.status,
         "Alamat": item.alamat,
+        "Reff Attention": item.reff_attention || "",
       }));
 
       setSppgData(formattedData);
