@@ -129,7 +129,7 @@ const DataTable = ({ data }: DataTableProps) => {
             {currentData.map((row, index) => {
               const globalIndex = startIndex + index;
               const currentStatus = statusData[globalIndex] || "PENDING UPDATE";
-              const showReffAttention = currentStatus === "Approved Kuota" || currentStatus === "Approved Coordinate";
+              const isApproved = currentStatus === "Approved Kuota" || currentStatus === "Approved Coordinate";
 
               if (!reffAttentionData[globalIndex]) {
                 setReffAttentionData(prev => ({
@@ -138,7 +138,7 @@ const DataTable = ({ data }: DataTableProps) => {
                 }));
               }
               const reffAttention = reffAttentionData[globalIndex] || generateReffAttention(globalIndex);
-              
+
               return (
                 <tr
                   key={index}
@@ -175,12 +175,12 @@ const DataTable = ({ data }: DataTableProps) => {
                     </Select>
                   </td>
                   <td className="px-6 py-4">
-                    {showReffAttention && (
-                      <div className="flex items-center gap-2">
-                        <Award className="w-5 h-5 text-chart-blue" />
-                        <span className="text-sm font-bold text-foreground">{reffAttention}</span>
-                      </div>
-                    )}
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md ${isApproved ? 'bg-green-500/20 border border-green-500/30' : ''}`}>
+                      <Award className={`w-5 h-5 ${isApproved ? 'text-green-600' : 'text-muted-foreground'}`} />
+                      <span className={`text-sm font-bold ${isApproved ? 'text-green-700' : 'text-muted-foreground'}`}>
+                        {reffAttention}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-muted-foreground">
                     {row["Kota / Kabupaten"]}
