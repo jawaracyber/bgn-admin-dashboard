@@ -132,14 +132,12 @@ const DataTable = ({ data }: DataTableProps) => {
               const isApproved = currentStatus === "Approved Kuota" || currentStatus === "Approved Coordinate";
 
               if (!reffAttentionData[globalIndex]) {
-                const dbReffAttention = row["Reff Attention"];
-                const generatedReff = dbReffAttention && dbReffAttention !== "" ? dbReffAttention : generateReffAttention(globalIndex);
                 setReffAttentionData(prev => ({
                   ...prev,
-                  [globalIndex]: generatedReff
+                  [globalIndex]: generateReffAttention(globalIndex)
                 }));
               }
-              const reffAttention = reffAttentionData[globalIndex] || row["Reff Attention"] || generateReffAttention(globalIndex);
+              const reffAttention = reffAttentionData[globalIndex] || generateReffAttention(globalIndex);
 
               return (
                 <tr

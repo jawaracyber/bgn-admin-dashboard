@@ -17,7 +17,6 @@ export interface SPPGData {
   provinsi: string;
   alamat?: string;
   status?: string;
-  reff_attention?: string;
   created_at?: string;
   updated_at?: string;
 }
