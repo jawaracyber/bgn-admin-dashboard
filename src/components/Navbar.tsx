@@ -18,7 +18,7 @@ const Navbar = () => {
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
         >
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            BGN Administrator Portal
+            PORTAL DATA NASIONAL
           </h1>
         </motion.div>
       </div>
