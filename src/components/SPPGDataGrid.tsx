@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   useReactTable,
   getCoreRowModel,
@@ -277,18 +278,23 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
   });
 
   return (
-    <Card className="rounded-xl shadow-sm border border-border overflow-hidden">
-      <CardContent className="p-0">
-        <div className="p-6 border-b border-border">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="glass rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+        <CardContent className="p-0">
+        <div className="p-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
               <Input
                 type="text"
                 placeholder="Cari data SPPG..."
                 value={globalFilter ?? ""}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="pl-10"
+                className="pl-12 h-12 rounded-xl border-2 focus:border-primary smooth-transition"
               />
             </div>
             <div className="text-sm text-muted-foreground">
@@ -299,13 +305,13 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-muted/50 sticky top-0 z-10">
+            <thead className="bg-gradient-to-r from-primary/10 to-accent/10 sticky top-0 z-10 backdrop-blur-sm">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-6 py-4 text-left text-sm font-semibold text-foreground"
+                      className="px-6 py-5 text-left text-xs font-bold text-foreground uppercase tracking-wider"
                     >
                       {header.isPlaceholder
                         ? null
@@ -327,9 +333,12 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                 </tr>
               ) : (
                 table.getRowModel().rows.map((row, index) => (
-                  <tr
+                  <motion.tr
                     key={row.id}
-                    className={`border-t border-border hover:bg-slate-50 transition-colors ${
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.02 }}
+                    className={`border-t border-border/50 hover:bg-primary/5 smooth-transition ${
                       index % 2 === 1 ? "bg-slate-50/30" : ""
                     }`}
                   >
@@ -338,14 +347,14 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
-                  </tr>
+                  </motion.tr>
                 ))
               )}
             </tbody>
           </table>
         </div>
 
-        <div className="px-6 py-4 border-t border-border">
+        <div className="px-6 py-5 border-t border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
           <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
               Menampilkan {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{" "}
@@ -394,7 +403,8 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };

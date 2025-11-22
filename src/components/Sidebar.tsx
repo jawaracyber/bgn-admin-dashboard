@@ -1,5 +1,6 @@
 import { NavLink } from "@/components/NavLink";
-import { LayoutDashboard, FileText, BarChart3, Settings } from "lucide-react";
+import { LayoutDashboard, FileText, BarChart3, Settings, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 const menuItems = [
   { title: "General", path: "/general", icon: LayoutDashboard },
@@ -8,44 +9,109 @@ const menuItems = [
   { title: "Settings", path: "/settings", icon: Settings },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0, x: -50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.5,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0 },
+};
+
 const Sidebar = () => {
   return (
-    <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-6 border-b border-sidebar-border">
+    <motion.aside
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-xl"
+    >
+      <motion.div
+        variants={itemVariants}
+        className="p-6 border-b border-sidebar-border/50"
+      >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-sidebar-primary flex items-center justify-center">
-            <span className="text-sidebar-primary-foreground font-bold text-lg">B</span>
-          </div>
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+            className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg relative overflow-hidden"
+          >
+            <span className="text-white font-bold text-xl relative z-10">B</span>
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.8, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute inset-0 bg-white/20 rounded-xl"
+            />
+          </motion.div>
           <div>
-            <h2 className="font-bold text-sidebar-foreground">S.U BGN</h2>
-            <p className="text-xs text-sidebar-foreground/70">SUPER USER ACCESS V 1.3.1</p>
+            <h2 className="font-bold text-sidebar-foreground text-lg">S.U BGN</h2>
+            <p className="text-xs text-sidebar-foreground/70 flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              SUPER USER ACCESS V 1.3.1
+            </p>
           </div>
         </div>
-      </div>
-      
+      </motion.div>
+
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
-          {menuItems.map((item) => (
-            <li key={item.path}>
+          {menuItems.map((item, index) => (
+            <motion.li
+              key={item.path}
+              variants={itemVariants}
+              whileHover={{ x: 8 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               <NavLink
                 to={item.path}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-                activeClassName="bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground smooth-transition group relative overflow-hidden"
+                activeClassName="bg-gradient-to-r from-sidebar-primary to-accent text-white font-semibold shadow-lg"
               >
-                <item.icon className="w-5 h-5" />
-                <span>{item.title}</span>
+                <motion.div
+                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <item.icon className="w-5 h-5 relative z-10" />
+                </motion.div>
+                <span className="relative z-10">{item.title}</span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 smooth-transition"
+                  layoutId="sidebar-hover"
+                />
               </NavLink>
-            </li>
+            </motion.li>
           ))}
         </ul>
       </nav>
-      
-      <div className="p-4 border-t border-sidebar-border">
-        <p className="text-xs text-sidebar-foreground/60 text-center">
-          © 2024 BGN Indonesia
-        </p>
-      </div>
-    </aside>
+
+      <motion.div
+        variants={itemVariants}
+        className="p-4 border-t border-sidebar-border/50"
+      >
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className="text-xs text-sidebar-foreground/60 text-center p-3 rounded-lg bg-sidebar-accent/30"
+        >
+          <p className="font-semibold">© 2024 BGN Indonesia</p>
+          <p className="text-[10px] mt-1">Powered by Advanced Technology</p>
+        </motion.div>
+      </motion.div>
+    </motion.aside>
   );
 };
 
