@@ -1,9 +1,11 @@
 import { SPPGDataGrid, type SPPGRow } from "@/components/SPPGDataGrid";
 import { AddSPPGDialog } from "@/components/AddSPPGDialog";
 import { supabase, type SPPGData } from "@/lib/supabase";
-import { Loader2 } from "lucide-react";
+import { Loader2, Database, Users, Building2, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import CardKPI from "@/components/CardKPI";
 
 const fetchSPPGData = async (): Promise<SPPGRow[]> => {
   const { data, error } = await supabase
@@ -37,38 +39,87 @@ const SPPG = () => {
     toast.success('Data berhasil dimuat ulang');
   };
 
+  const approvedCount = sppgData.filter(item =>
+    item.prog_stat === "APPROVED" || item.prog_stat === "APPROVED KUOTA"
+  ).length;
+
+  const pendingCount = sppgData.filter(item =>
+    item.prog_stat === "PENDING UPDATE"
+  ).length;
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 p-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-between"
+      >
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Data SPPG</h1>
-          <p className="text-muted-foreground">Sistem Pengelolaan dan Pemantauan SPPG Nasional</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-3">
+            Data SPPG
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Sistem Pengelolaan dan Pemantauan SPPG Nasional
+          </p>
         </div>
-        <AddSPPGDialog onSuccess={handleStatusUpdate} />
-      </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <AddSPPGDialog onSuccess={handleStatusUpdate} />
+        </motion.div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <p className="text-sm text-muted-foreground mb-2">Total SPPG</p>
-          <h3 className="text-3xl font-bold text-foreground">{sppgData.length.toLocaleString()}</h3>
-        </div>
-
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <p className="text-sm text-muted-foreground mb-2">Penerima Manfaat</p>
-          <h3 className="text-3xl font-bold text-foreground">41,9 Juta</h3>
-        </div>
-
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <p className="text-sm text-muted-foreground mb-2">SPPG Beroperasi</p>
-          <h3 className="text-3xl font-bold text-foreground">15.433</h3>
-          <p className="text-xs text-muted-foreground mt-2">Per 21 November 2025</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <CardKPI
+          title="Total SPPG"
+          value={sppgData.length.toLocaleString()}
+          icon={Database}
+          trend="+12.5%"
+          trendUp={true}
+          gradient="primary"
+          delay={0.1}
+        />
+        <CardKPI
+          title="Penerima Manfaat"
+          value="41,9 Juta"
+          icon={Users}
+          trend="+8.3%"
+          trendUp={true}
+          gradient="secondary"
+          delay={0.2}
+        />
+        <CardKPI
+          title="SPPG Beroperasi"
+          value="15.433"
+          icon={Building2}
+          trend="+5.2%"
+          trendUp={true}
+          gradient="accent"
+          delay={0.3}
+        />
+        <CardKPI
+          title="SPPG Disetujui"
+          value={approvedCount.toLocaleString()}
+          icon={TrendingUp}
+          trend={`${pendingCount} Pending`}
+          trendUp={false}
+          gradient="warm"
+          delay={0.4}
+        />
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center justify-center py-20 glass rounded-2xl"
+        >
+          <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+          <p className="text-muted-foreground">Memuat data SPPG...</p>
+        </motion.div>
       ) : (
         <SPPGDataGrid data={sppgData} onStatusUpdate={handleStatusUpdate} />
       )}
