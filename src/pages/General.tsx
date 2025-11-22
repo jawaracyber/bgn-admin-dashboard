@@ -5,6 +5,7 @@ import ChartPie from "@/components/ChartPie";
 import ChartLine from "@/components/ChartLine";
 import { DollarSign, TrendingUp, FileText, CheckCircle, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { motion } from "framer-motion";
 
 const budgetData = [
   { name: "Jan", value: 4200000000 },
@@ -51,19 +52,29 @@ const rankingData = [
 
 const General = () => {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard General</h1>
-        <p className="text-muted-foreground">Ringkasan data dan analitik program nasional</p>
-      </div>
+    <div className="space-y-8 p-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-3">
+          Dashboard General
+        </h1>
+        <p className="text-muted-foreground text-lg">
+          Ringkasan data dan analitik program nasional
+        </p>
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <CardKPI
           title="Total Anggaran"
           value="Rp 125 T"
           icon={DollarSign}
-          trend="+12.5% dari tahun lalu"
+          trend="+12.5%"
           trendUp={true}
+          gradient="primary"
+          delay={0.1}
         />
         <CardKPI
           title="Anggaran Terserap"
@@ -71,77 +82,120 @@ const General = () => {
           icon={TrendingUp}
           trend="74% realisasi"
           trendUp={true}
+          gradient="secondary"
+          delay={0.2}
         />
         <CardKPI
           title="Total Program"
           value="1,247"
           icon={FileText}
-          trend="+8.3% bulan ini"
+          trend="+8.3%"
           trendUp={true}
+          gradient="accent"
+          delay={0.3}
         />
         <CardKPI
           title="Penyelesaian"
           value="87.2%"
           icon={CheckCircle}
-          trend="+5.1% bulan ini"
+          trend="+5.1%"
           trendUp={true}
+          gradient="warm"
+          delay={0.4}
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartBar
-          data={budgetData}
-          title="Penyerapan Anggaran per Bulan"
-          subtitle="Data penyerapan anggaran tahun 2024"
-        />
-        <ChartLine
-          data={lineData}
-          title="Peningkatan Hasil Program"
-          subtitle="Perbandingan hasil aktual vs target"
-        />
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <ChartBar
+            data={budgetData}
+            title="Penyerapan Anggaran per Bulan"
+            subtitle="Data penyerapan anggaran tahun 2024"
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <ChartLine
+            data={lineData}
+            title="Peningkatan Hasil Program"
+            subtitle="Perbandingan hasil aktual vs target"
+          />
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartStacked
-          data={stackedData}
-          title="Permasalahan Lapangan per Kategori"
-          subtitle="Distribusi masalah berdasarkan tahapan"
-        />
-        <ChartPie
-          data={provinceData}
-          title="Persebaran Program per Provinsi"
-          subtitle="5 provinsi dengan program terbanyak"
-        />
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <ChartStacked
+            data={stackedData}
+            title="Permasalahan Lapangan per Kategori"
+            subtitle="Distribusi masalah berdasarkan tahapan"
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <ChartPie
+            data={provinceData}
+            title="Persebaran Program per Provinsi"
+            subtitle="5 provinsi dengan program terbanyak"
+          />
+        </motion.div>
       </div>
 
-      <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-        <div className="mb-4 flex items-center gap-3">
-          <BarChart3 className="w-5 h-5 text-primary" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+        className="glass rounded-2xl p-8 shadow-xl border border-white/20 card-hover"
+      >
+        <div className="mb-6 flex items-center gap-3">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+            className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg"
+          >
+            <BarChart3 className="w-6 h-6 text-white" />
+          </motion.div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">Ranking Provinsi</h3>
+            <h3 className="text-xl font-bold text-foreground">Ranking Provinsi</h3>
             <p className="text-sm text-muted-foreground">Berdasarkan jumlah program aktif</p>
           </div>
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={rankingData} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
             <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} width={120} />
+            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} width={140} />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'hsl(var(--card))',
                 border: '1px solid hsl(var(--border))',
-                borderRadius: '8px'
+                borderRadius: '12px',
+                padding: '12px',
+                boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
               }}
             />
-            <Bar dataKey="value" radius={[0, 8, 8, 0]}>
+            <Bar dataKey="value" radius={[0, 12, 12, 0]}>
               {rankingData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
     </div>
   );
 };
