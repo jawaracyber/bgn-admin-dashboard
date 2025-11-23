@@ -1,8 +1,9 @@
-import { User, Bell, Menu, LogOut } from "lucide-react";
+import { User, Bell, Menu, LogOut, Crown, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import Sidebar from "./Sidebar";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Navbar = () => {
-  const { user, fullName, position } = useAuth();
+  const { user, fullName, position, isSuperUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -81,7 +82,20 @@ const Navbar = () => {
           className="flex items-center gap-2 md:gap-4 pl-2 md:pl-4 border-l border-border/50"
         >
           <div className="text-right hidden md:block">
-            <p className="text-xs md:text-sm font-semibold text-foreground">{fullName || user?.email}</p>
+            <p className="text-xs md:text-sm font-semibold text-foreground flex items-center justify-end gap-2">
+              {fullName || user?.email}
+              {isSuperUser ? (
+                <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0 shadow-lg">
+                  <Crown className="w-3 h-3 mr-1" />
+                  GOLD
+                </Badge>
+              ) : (
+                <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0 shadow-md">
+                  <Shield className="w-3 h-3 mr-1" />
+                  SILVER
+                </Badge>
+              )}
+            </p>
             <p className="text-xs text-muted-foreground font-medium">
               {position || 'Staff'}
             </p>
@@ -96,7 +110,28 @@ const Navbar = () => {
                 <User className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </motion.div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuLabel>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-sm">{fullName || user?.email}</p>
+                    {isSuperUser ? (
+                      <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0 shadow-lg text-xs">
+                        <Crown className="w-3 h-3 mr-1" />
+                        GOLD
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0 shadow-md text-xs">
+                        <Shield className="w-3 h-3 mr-1" />
+                        SILVER
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground font-normal">{position || 'Staff'}</p>
+                  <p className="text-xs text-muted-foreground font-normal">{user?.email}</p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
