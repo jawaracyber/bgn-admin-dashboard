@@ -45,31 +45,22 @@ const Sidebar = () => {
           <motion.div
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.3 }}
-            className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center shadow-lg relative overflow-hidden border border-white/20"
+            className="w-12 h-12 flex items-center justify-center"
           >
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Garuda_Pancasila%2C_Govt_of_Indonesia.svg/800px-Garuda_Pancasila%2C_Govt_of_Indonesia.svg.png"
+              src="/garudapancasila.svg"
               alt="Garuda Pancasila"
-              className="w-10 h-10 object-contain relative z-10"
-            />
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-0 bg-yellow-400/20 rounded-xl"
+              className="w-12 h-12 object-contain"
             />
           </motion.div>
           <div>
-            <h2 className="font-bold text-sidebar-foreground text-lg">S.U BGN</h2>
-            <p className="text-xs text-sidebar-foreground/70 flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              {isReadOnly ? "USER GRANTED" : "SUPER USER"}
+            <h2 className="font-bold text-sidebar-foreground text-sm leading-tight">PROGRAM STRATEGIS</h2>
+            <p className="text-[10px] text-sidebar-foreground/70 flex items-center gap-1 mt-0.5">
+              REPUBLIK INDONESIA
+              <span className="inline-flex items-center gap-0.5">
+                <span className="w-2 h-1.5 bg-red-600"></span>
+                <span className="w-2 h-1.5 bg-white border border-gray-300"></span>
+              </span>
             </p>
           </div>
         </div>
