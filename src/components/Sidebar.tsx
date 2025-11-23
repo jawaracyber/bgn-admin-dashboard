@@ -107,7 +107,7 @@ const Sidebar = () => {
           whileHover={{ scale: 1.05 }}
           className="text-xs text-sidebar-foreground/60 text-center p-3 rounded-lg bg-sidebar-accent/30"
         >
-          <p className="font-semibold">© 2024 BGN Indonesia</p>
+          <p className="font-semibold">© 2025 BGN Indonesia</p>
           <p className="text-[10px] mt-1">Powered by Advanced Technology</p>
         </motion.div>
       </motion.div>

@@ -114,7 +114,7 @@ const General = () => {
           <ChartBar
             data={budgetData}
             title="Penyerapan Anggaran per Bulan"
-            subtitle="Data penyerapan anggaran tahun 2024"
+            subtitle="Data penyerapan anggaran tahun 2025"
           />
         </motion.div>
         <motion.div
