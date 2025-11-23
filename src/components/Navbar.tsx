@@ -1,4 +1,4 @@
-import { User, Bell, Menu, LogOut, Crown, Shield } from "lucide-react";
+import { User, Bell, Menu, LogOut, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -86,12 +86,12 @@ const Navbar = () => {
               {fullName || user?.email}
               {isSuperUser ? (
                 <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0 shadow-lg">
-                  <Crown className="w-3 h-3 mr-1" />
+                  <Star className="w-3 h-3 mr-1" />
                   GOLD
                 </Badge>
               ) : (
                 <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0 shadow-md">
-                  <Shield className="w-3 h-3 mr-1" />
+                  <Star className="w-3 h-3 mr-1" />
                   SILVER
                 </Badge>
               )}
@@ -117,12 +117,12 @@ const Navbar = () => {
                     <p className="font-semibold text-sm">{fullName || user?.email}</p>
                     {isSuperUser ? (
                       <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0 shadow-lg text-xs">
-                        <Crown className="w-3 h-3 mr-1" />
+                        <Star className="w-3 h-3 mr-1" />
                         GOLD
                       </Badge>
                     ) : (
                       <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0 shadow-md text-xs">
-                        <Shield className="w-3 h-3 mr-1" />
+                        <Star className="w-3 h-3 mr-1" />
                         SILVER
                       </Badge>
                     )}
