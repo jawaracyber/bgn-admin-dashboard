@@ -28,6 +28,7 @@ export interface SPPGRow {
   id: string;
   prog_stat: string;
   kota_kabupaten: string;
+  kecamatan: string;
   provinsi: string;
   alamat: string;
   reff_attention: string;
@@ -182,6 +183,29 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => (
         <div className="text-muted-foreground">{row.getValue("kota_kabupaten")}</div>
+      ),
+    },
+    {
+      accessorKey: "kecamatan",
+      header: ({ column }) => {
+        return (
+          <div
+            className="flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Kecamatan
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="w-4 h-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ArrowDown className="w-4 h-4" />
+            ) : (
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+            )}
+          </div>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="text-muted-foreground">{row.getValue("kecamatan") || "-"}</div>
       ),
     },
     {

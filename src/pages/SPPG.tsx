@@ -19,6 +19,7 @@ const fetchSPPGData = async (): Promise<SPPGRow[]> => {
     id: item.id,
     prog_stat: item.prog_stat || "PENDING UPDATE",
     kota_kabupaten: item.kota_kabupaten,
+    kecamatan: item.kecamatan || "-",
     provinsi: item.provinsi,
     alamat: item.alamat || "-",
     reff_attention: item.reff_attention || "-",
