@@ -41,11 +41,45 @@ const Login = () => {
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="space-y-3">
           <div className="flex justify-center mb-2">
-            <img
-              src="/IMG-20251123-WA0002.jpg"
-              alt="Logo Satsus Prosnas"
-              className="w-32 h-32 object-contain"
-            />
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 rounded-3xl blur-xl opacity-30 animate-pulse"></div>
+              <div className="relative w-24 h-24 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-14 h-14 text-white"
+                >
+                  <path
+                    d="M12 2L2 7L12 12L22 7L12 2Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="currentColor"
+                    fillOpacity="0.2"
+                  />
+                  <path
+                    d="M2 17L12 22L22 17"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 12L12 17L22 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="12" cy="7" r="1.5" fill="currentColor" />
+                  <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                  <circle cx="12" cy="17" r="1.5" fill="currentColor" />
+                </svg>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
+              </div>
+            </div>
           </div>
           <CardTitle className="text-2xl text-center font-bold text-slate-900">
             Portal Data Nasional
