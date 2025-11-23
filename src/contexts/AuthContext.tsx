@@ -6,12 +6,14 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isReadOnly: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   loading: true,
+  isReadOnly: false,
 });
 
 export const useAuth = () => {
@@ -30,11 +32,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setIsReadOnly(session?.user?.email === 'miftahfarid@satsuspronas.go.id');
       setLoading(false);
     });
 
@@ -42,6 +46,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       (async () => {
         setSession(session);
         setUser(session?.user ?? null);
+        setIsReadOnly(session?.user?.email === 'miftahfarid@satsuspronas.go.id');
         setLoading(false);
       })();
     });
@@ -53,6 +58,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     session,
     loading,
+    isReadOnly,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import CardKPI from "@/components/CardKPI";
+import { useAuth } from "@/contexts/AuthContext";
 
 const fetchSPPGData = async (): Promise<SPPGRow[]> => {
   const { data, error } = await supabase
@@ -27,6 +28,7 @@ const fetchSPPGData = async (): Promise<SPPGRow[]> => {
 };
 
 const SPPG = () => {
+  const { isReadOnly } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: sppgData = [], isLoading: loading } = useQuery({
@@ -64,13 +66,15 @@ const SPPG = () => {
             Sistem Pengelolaan dan Pemantauan SPPG Nasional
           </p>
         </div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <AddSPPGDialog onSuccess={handleStatusUpdate} />
-        </motion.div>
+        {!isReadOnly && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <AddSPPGDialog onSuccess={handleStatusUpdate} />
+          </motion.div>
+        )}
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">

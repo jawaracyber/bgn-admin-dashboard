@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   useReactTable,
   getCoreRowModel,
@@ -14,7 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown, Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -84,9 +92,11 @@ const handleStatusChange = async (id: string, newStatus: string, onStatusUpdate?
 };
 
 export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
+  const { isReadOnly } = useAuth();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const columns: ColumnDef<SPPGRow>[] = [
     {
@@ -133,6 +143,15 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => {
         const status = (row.getValue("prog_stat") as string) || "PENDING UPDATE";
+
+        if (isReadOnly) {
+          return (
+            <div className={`w-[140px] md:w-[180px] px-3 py-2 rounded-md text-xs md:text-sm font-medium ${getStatusColor(status)}`}>
+              {status}
+            </div>
+          );
+        }
+
         return (
           <Select
             value={status}
@@ -275,6 +294,21 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => (
         <div className="text-muted-foreground">{row.getValue("reff_attention") || "-"}</div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Aksi",
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setDetailDialogOpen(true)}
+          className="hover:bg-primary/10"
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Detail
+        </Button>
       ),
     },
   ];
@@ -433,6 +467,20 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
         </div>
         </CardContent>
       </Card>
+
+      <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Detail Pengajuan</DialogTitle>
+            <DialogDescription className="pt-4 text-center">
+              <div className="space-y-2">
+                <p className="text-lg font-semibold text-foreground">Under Development</p>
+                <p className="text-muted-foreground">Will Deploy Soon</p>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };

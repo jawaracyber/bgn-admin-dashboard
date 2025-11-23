@@ -1,6 +1,7 @@
 import { NavLink } from "@/components/NavLink";
 import { LayoutDashboard, FileText, BarChart3, Settings, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   { title: "General", path: "/general", icon: LayoutDashboard },
@@ -27,6 +28,8 @@ const itemVariants = {
 };
 
 const Sidebar = () => {
+  const { isReadOnly } = useAuth();
+
   return (
     <motion.aside
       initial="hidden"
@@ -62,7 +65,7 @@ const Sidebar = () => {
             <h2 className="font-bold text-sidebar-foreground text-lg">S.U BGN</h2>
             <p className="text-xs text-sidebar-foreground/70 flex items-center gap-1">
               <Sparkles className="w-3 h-3" />
-              SUPER USER ACCESS V 1.3.1
+              {isReadOnly ? "USER GRANTED" : "SUPER USER"}
             </p>
           </div>
         </div>
