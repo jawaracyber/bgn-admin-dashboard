@@ -54,13 +54,14 @@ const Sidebar = () => {
             />
           </motion.div>
           <div>
-            <h2 className="font-bold text-sidebar-foreground text-sm leading-tight">PROGRAM STRATEGIS</h2>
+            <h2 className="font-bold text-sidebar-foreground text-sm leading-tight">PROGRAM STRATEGIS NASIONAL</h2>
             <p className="text-[10px] text-sidebar-foreground/70 flex items-center gap-1 mt-0.5">
               REPUBLIK INDONESIA
-              <span className="inline-flex items-center gap-0.5">
-                <span className="w-2 h-1.5 bg-red-600"></span>
-                <span className="w-2 h-1.5 bg-white border border-gray-300"></span>
-              </span>
+              <img
+                src="/merahputih.png"
+                alt="Bendera Indonesia"
+                className="w-4 h-3 object-cover"
+              />
             </p>
           </div>
         </div>
