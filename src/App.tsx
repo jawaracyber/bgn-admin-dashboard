@@ -15,6 +15,7 @@ const Reports = lazy(() => import("@/pages/Reports"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const Login = lazy(() => import("@/pages/Login"));
+const RestrictedAccess = lazy(() => import("@/pages/RestrictedAccess"));
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,8 @@ const App = () => (
               <Route path="/" element={<Navigate to="/general" replace />} />
               <Route path="/general" element={<ProtectedRoute><MainLayout><General /></MainLayout></ProtectedRoute>} />
               <Route path="/sppg" element={<ProtectedRoute><MainLayout><SPPG /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-bpn" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-tax" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />

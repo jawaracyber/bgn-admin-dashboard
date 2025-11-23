@@ -1,13 +1,13 @@
 import { NavLink } from "@/components/NavLink";
-import { LayoutDashboard, FileText, BarChart3, Settings, Sparkles } from "lucide-react";
+import { LayoutDashboard, FileText, MapPin, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
-  { title: "General", path: "/general", icon: LayoutDashboard },
-  { title: "SPPG", path: "/sppg", icon: FileText },
-  { title: "Reports", path: "/reports", icon: BarChart3 },
-  { title: "Settings", path: "/settings", icon: Settings },
+  { title: "Dashboard Utama", path: "/general", icon: LayoutDashboard },
+  { title: "Badan Gizi Nasional", path: "/sppg", icon: FileText },
+  { title: "Badan Pertanahan Nasional", path: "/restricted-bpn", icon: MapPin },
+  { title: "Badan Perpajakan", path: "/restricted-tax", icon: DollarSign },
 ];
 
 const containerVariants = {
