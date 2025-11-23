@@ -51,9 +51,13 @@ const Navbar = () => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          className="flex flex-col"
         >
-          <h1 className="text-base md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            PORTAL DATA NASIONAL
+          <p className="text-[10px] md:text-xs text-muted-foreground font-medium tracking-wide">
+            SISTEM INFORMASI
+          </p>
+          <h1 className="text-sm md:text-lg lg:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight">
+            PROGRAM STRATEGIS NASIONAL
           </h1>
         </motion.div>
       </div>
