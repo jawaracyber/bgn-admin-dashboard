@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, userRole, isSuperUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -82,7 +82,9 @@ const Navbar = () => {
         >
           <div className="text-right hidden md:block">
             <p className="text-xs md:text-sm font-semibold text-foreground">{user?.email}</p>
-            <p className="text-xs text-muted-foreground font-medium">Administrator</p>
+            <p className="text-xs text-muted-foreground font-medium">
+              {isSuperUser ? 'Super User' : userRole === 'USER_GRANTED' ? 'User Granted' : 'User'}
+            </p>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
