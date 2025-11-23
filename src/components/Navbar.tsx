@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Navbar = () => {
-  const { user, userRole, isSuperUser } = useAuth();
+  const { user, fullName, position } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -81,9 +81,9 @@ const Navbar = () => {
           className="flex items-center gap-2 md:gap-4 pl-2 md:pl-4 border-l border-border/50"
         >
           <div className="text-right hidden md:block">
-            <p className="text-xs md:text-sm font-semibold text-foreground">{user?.email}</p>
+            <p className="text-xs md:text-sm font-semibold text-foreground">{fullName || user?.email}</p>
             <p className="text-xs text-muted-foreground font-medium">
-              {isSuperUser ? 'Super User' : userRole === 'USER_GRANTED' ? 'User Granted' : 'User'}
+              {position || 'Staff'}
             </p>
           </div>
           <DropdownMenu>

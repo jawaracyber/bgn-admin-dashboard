@@ -11,6 +11,8 @@ interface AuthContextType {
   isReadOnly: boolean;
   userRole: UserRole;
   isSuperUser: boolean;
+  fullName: string;
+  position: string;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -20,6 +22,8 @@ const AuthContext = createContext<AuthContextType>({
   isReadOnly: false,
   userRole: null,
   isSuperUser: false,
+  fullName: '',
+  position: '',
 });
 
 export const useAuth = () => {
@@ -41,12 +45,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [isSuperUser, setIsSuperUser] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [position, setPosition] = useState('');
 
   const fetchUserRole = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('user_roles')
-        .select('role')
+        .select('role, full_name, position')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -56,11 +62,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUserRole(role);
       setIsSuperUser(role === 'SUPER_USER');
       setIsReadOnly(role === 'USER_GRANTED');
+      setFullName(data?.full_name || 'User');
+      setPosition(data?.position || 'Staff');
     } catch (error) {
       console.error('Error fetching user role:', error);
       setUserRole('USER_GRANTED');
       setIsSuperUser(false);
       setIsReadOnly(true);
+      setFullName('User');
+      setPosition('Staff');
     }
   };
 
@@ -84,6 +94,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setUserRole(null);
           setIsSuperUser(false);
           setIsReadOnly(false);
+          setFullName('');
+          setPosition('');
         }
         setLoading(false);
       })();
@@ -99,6 +111,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isReadOnly,
     userRole,
     isSuperUser,
+    fullName,
+    position,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
