@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown, Eye } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown, Eye, MoreVertical, Star } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
 export interface SPPGRow {
@@ -87,6 +93,33 @@ const handleStatusChange = async (id: string, newStatus: string, onStatusUpdate?
     }
   } catch (error) {
     toast.error('Gagal memperbarui status');
+    console.error(error);
+  }
+};
+
+const handleSetReffAttention = async (id: string, onStatusUpdate?: () => void) => {
+  try {
+    const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-sppg-status`;
+    const response = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id_sppg: id,
+        reff_attention: 'PR07',
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Gagal memperbarui reff attention');
+    }
+
+    toast.success('Reff Attention berhasil diubah ke PR07');
+    window.location.reload();
+  } catch (error) {
+    toast.error('Gagal memperbarui reff attention');
     console.error(error);
   }
 };
@@ -300,15 +333,29 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       id: "actions",
       header: "Aksi",
       cell: ({ row }) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setDetailDialogOpen(true)}
-          className="hover:bg-primary/10"
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          Detail
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="hover:bg-primary/10"
+            >
+              <MoreVertical className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => setDetailDialogOpen(true)}>
+              <Eye className="w-4 h-4 mr-2" />
+              Lihat Detail
+            </DropdownMenuItem>
+            {!isReadOnly && (
+              <DropdownMenuItem onClick={() => handleSetReffAttention(row.original.id, onStatusUpdate)}>
+                <Star className="w-4 h-4 mr-2" />
+                Set Reff PR07
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];
