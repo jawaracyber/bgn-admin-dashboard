@@ -52,21 +52,21 @@ const rankingData = [
 
 const General = () => {
   return (
-    <div className="space-y-8 p-8">
+    <div className="space-y-6 md:space-y-8 p-4 md:p-6 lg:p-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-3">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-2 md:mb-3">
           Dashboard General
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
           Ringkasan data dan analitik program nasional
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <CardKPI
           title="Total Anggaran"
           value="Rp 125 T"
@@ -105,7 +105,7 @@ const General = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -130,7 +130,7 @@ const General = () => {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -159,26 +159,26 @@ const General = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.7 }}
-        className="glass rounded-2xl p-8 shadow-xl border border-white/20 card-hover"
+        className="glass rounded-2xl p-4 md:p-6 lg:p-8 shadow-xl border border-white/20 card-hover"
       >
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-4 md:mb-6 flex items-center gap-2 md:gap-3">
           <motion.div
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.6 }}
-            className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg"
           >
-            <BarChart3 className="w-6 h-6 text-white" />
+            <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </motion.div>
           <div>
-            <h3 className="text-xl font-bold text-foreground">Ranking Provinsi</h3>
-            <p className="text-sm text-muted-foreground">Berdasarkan jumlah program aktif</p>
+            <h3 className="text-lg md:text-xl font-bold text-foreground">Ranking Provinsi</h3>
+            <p className="text-xs md:text-sm text-muted-foreground">Berdasarkan jumlah program aktif</p>
           </div>
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={rankingData} layout="vertical">
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-            <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} width={140} />
+            <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={10} width={100} />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'hsl(var(--card))',

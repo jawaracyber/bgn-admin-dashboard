@@ -173,12 +173,13 @@ export const AddSPPGDialog = ({ onSuccess }: AddSPPGDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button className="gap-1 md:gap-2 text-sm md:text-base px-3 md:px-4">
           <Plus className="w-4 h-4" />
-          Tambah SPPG
+          <span className="hidden sm:inline">Tambah SPPG</span>
+          <span className="sm:hidden">Tambah</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Tambah Data SPPG</DialogTitle>
           <DialogDescription>

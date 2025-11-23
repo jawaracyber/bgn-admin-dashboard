@@ -48,18 +48,18 @@ const SPPG = () => {
   ).length;
 
   return (
-    <div className="space-y-8 p-8">
+    <div className="space-y-6 md:space-y-8 p-4 md:p-6 lg:p-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center justify-between"
+        className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-3">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-2 md:mb-3">
             Data SPPG
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
             Sistem Pengelolaan dan Pemantauan SPPG Nasional
           </p>
         </div>
@@ -72,7 +72,7 @@ const SPPG = () => {
         </motion.div>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <CardKPI
           title="Total SPPG"
           value={sppgData.length.toLocaleString()}

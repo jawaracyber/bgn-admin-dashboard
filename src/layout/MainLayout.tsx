@@ -15,7 +15,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen w-full flex bg-background relative overflow-hidden">
       <div className="absolute inset-0 gradient-mesh opacity-[0.02] pointer-events-none" />
 
-      <Sidebar />
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
 
       <div className="flex-1 flex flex-col relative z-10">
         <Navbar />
