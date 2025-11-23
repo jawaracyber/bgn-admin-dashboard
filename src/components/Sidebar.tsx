@@ -35,7 +35,7 @@ const Sidebar = () => {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-xl"
+      className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-xl h-screen"
     >
       <motion.div
         variants={itemVariants}
@@ -67,7 +67,7 @@ const Sidebar = () => {
         </div>
       </motion.div>
 
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 overflow-y-auto">
         <ul className="space-y-2">
           {menuItems.map((item, index) => (
             <motion.li
