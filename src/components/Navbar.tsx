@@ -1,10 +1,28 @@
-import { User, Bell, Menu } from "lucide-react";
+import { User, Bell, Menu, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Sidebar from "./Sidebar";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Navbar = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Gagal logout");
+    } else {
+      toast.success("Berhasil logout");
+      navigate("/login");
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -63,17 +81,26 @@ const Navbar = () => {
           className="flex items-center gap-2 md:gap-4 pl-2 md:pl-4 border-l border-border/50"
         >
           <div className="text-right hidden md:block">
-            <p className="text-xs md:text-sm font-semibold text-foreground">Okky Septian P. S.KOM, Mo.E, CSIIS</p>
-            <p className="text-xs text-muted-foreground font-medium">DANWIL INDONESIA BARAT</p>
-            <p className="text-xs text-muted-foreground">okky.pradana@bgn.co.id</p>
+            <p className="text-xs md:text-sm font-semibold text-foreground">{user?.email}</p>
+            <p className="text-xs text-muted-foreground font-medium">Administrator</p>
           </div>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 md:w-12 md:h-12 rounded-full gradient-primary flex items-center justify-center shadow-lg cursor-pointer ring-2 ring-primary/20 ring-offset-2"
-          >
-            <User className="w-5 h-5 md:w-6 md:h-6 text-white" />
-          </motion.div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 md:w-12 md:h-12 rounded-full gradient-primary flex items-center justify-center shadow-lg cursor-pointer ring-2 ring-primary/20 ring-offset-2"
+              >
+                <User className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              </motion.div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </motion.div>
       </div>
     </motion.header>

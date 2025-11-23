@@ -6,12 +6,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "@/layout/MainLayout";
 import { Loader2 } from "lucide-react";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const General = lazy(() => import("@/pages/General"));
 const SPPG = lazy(() => import("@/pages/SPPG"));
 const Reports = lazy(() => import("@/pages/Reports"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+const Login = lazy(() => import("@/pages/Login"));
 
 const queryClient = new QueryClient();
 
@@ -27,16 +30,19 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/general" replace />} />
-            <Route path="/general" element={<MainLayout><General /></MainLayout>} />
-            <Route path="/sppg" element={<MainLayout><SPPG /></MainLayout>} />
-            <Route path="/reports" element={<MainLayout><Reports /></MainLayout>} />
-            <Route path="/settings" element={<MainLayout><Settings /></MainLayout>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <AuthProvider>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Navigate to="/general" replace />} />
+              <Route path="/general" element={<ProtectedRoute><MainLayout><General /></MainLayout></ProtectedRoute>} />
+              <Route path="/sppg" element={<ProtectedRoute><MainLayout><SPPG /></MainLayout></ProtectedRoute>} />
+              <Route path="/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
