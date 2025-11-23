@@ -43,22 +43,26 @@ const Sidebar = () => {
       >
         <div className="flex items-center gap-3">
           <motion.div
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.6 }}
-            className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg relative overflow-hidden"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
+            className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center shadow-lg relative overflow-hidden border border-white/20"
           >
-            <span className="text-white font-bold text-xl relative z-10">B</span>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Garuda_Pancasila%2C_Govt_of_Indonesia.svg/800px-Garuda_Pancasila%2C_Govt_of_Indonesia.svg.png"
+              alt="Garuda Pancasila"
+              className="w-10 h-10 object-contain relative z-10"
+            />
             <motion.div
               animate={{
                 scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5],
+                opacity: [0.3, 0.6, 0.3],
               }}
               transition={{
-                duration: 2,
+                duration: 3,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute inset-0 bg-white/20 rounded-xl"
+              className="absolute inset-0 bg-yellow-400/20 rounded-xl"
             />
           </motion.div>
           <div>
