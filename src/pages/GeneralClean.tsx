@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Utensils, School, Store, Laptop, CreditCard, Briefcase, Trash2 } from "lucide-react";
 import { CleanKPICard } from "@/components/CleanKPICard";
-import { PSNProgressChart } from "@/components/PSNProgressChart";
+import { NationalSummaryBar } from "@/components/NationalSummaryBar";
+import { ProgramMetricCard } from "@/components/ProgramMetricCard";
 import { CircularProgress } from "@/components/CircularProgress";
 import { BudgetCard } from "@/components/BudgetCard";
 import { MetricsGrid } from "@/components/MetricsGrid";
@@ -262,24 +263,56 @@ const GeneralClean = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {kpiCards.map((card, index) => (
-                <CleanKPICard
-                  key={card.title}
-                  title={card.title}
-                  value={card.value}
-                  unit={card.unit}
-                  subtitle={card.subtitle}
-                  icon={card.icon}
-                  color={card.color}
-                  trend={card.trend}
-                  timeseries={card.timeseries}
-                  delay={index * 0.1}
-                />
-              ))}
-            </div>
+            <NationalSummaryBar
+              totalProgress={45.7}
+              trendChange={5.2}
+              bestProvince={{ name: 'DKI Jakarta', percentage: 78.5 }}
+              worstProvince={{ name: 'Papua', percentage: 28.3 }}
+            />
 
-            <PSNProgressChart />
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6">
+              <ProgramMetricCard
+                title="Makan Bergizi Gratis"
+                subtitle="Program Prioritas 2025"
+                icon={<Utensils className="w-7 h-7" />}
+                target={82900000}
+                realisasi={36200000}
+                color="#16A34A"
+                sparklineData={[30, 32, 34, 35, 37, 40, 43.6]}
+                status="ontrack"
+              />
+              <ProgramMetricCard
+                title="Sekolah Rakyat"
+                subtitle="Pendidikan Berkualitas"
+                icon={<School className="w-7 h-7" />}
+                target={100000}
+                realisasi={848}
+                color="#3B82F6"
+                sparklineData={[0, 0.1, 0.3, 0.5, 0.6, 0.7, 0.85]}
+                status="delay"
+                provinceName="Papua (0.2%)"
+              />
+              <ProgramMetricCard
+                title="Koperasi Merah Putih"
+                subtitle="UMKM Berkelanjutan"
+                icon={<Store className="w-7 h-7" />}
+                target={1000000}
+                realisasi={425000}
+                color="#F59E0B"
+                sparklineData={[35, 37, 38, 39, 40, 41, 42.5]}
+                status="ontrack"
+              />
+              <ProgramMetricCard
+                title="Digitalisasi Pendidikan"
+                subtitle="Transformasi Digital"
+                icon={<Laptop className="w-7 h-7" />}
+                target={200000}
+                realisasi={145000}
+                color="#8B5CF6"
+                sparklineData={[60, 63, 65, 68, 70, 71, 72.5]}
+                status="ontrack"
+              />
+            </div>
 
             <BudgetCard
               metrics={[
