@@ -38,13 +38,13 @@ export const BudgetCard = ({ metrics }: BudgetCardProps) => {
   };
 
   return (
-    <Card className="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-500 border-0 shadow-lg overflow-hidden relative h-full">
+    <Card className="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-500 border-0 shadow-soft-xl overflow-hidden relative h-full rounded-2xl">
       <div className="p-5">
         <div className="flex justify-between items-start mb-4">
           {metrics.map((metric, i) => (
             <motion.div
               key={i}
-              className="bg-white/15 backdrop-blur-sm rounded-xl px-5 py-3 min-w-[120px]"
+              className="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-3 min-w-[120px] shadow-soft"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}

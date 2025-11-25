@@ -17,9 +17,9 @@ export const CircularProgress = ({
   const progress = ((100 - value) / 100) * circumference;
 
   return (
-    <Card className="bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500 border-0 shadow-lg overflow-hidden relative h-full">
+    <Card className="bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500 border-0 shadow-soft-xl overflow-hidden relative h-full rounded-2xl">
       <div className="absolute top-3 right-3">
-        <button className="text-white/60 hover:text-white/90 transition-colors">
+        <button className="text-white/60 hover:text-white/90 transition-colors rounded-lg p-1.5 hover:bg-white/10">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
           </svg>
