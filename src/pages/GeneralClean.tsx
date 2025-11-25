@@ -5,9 +5,13 @@ import { CleanKPICard } from "@/components/CleanKPICard";
 import { CleanStatCard } from "@/components/CleanStatCard";
 import { TrendMultiChart } from "@/components/TrendMultiChart";
 import { PriorityTable } from "@/components/PriorityTable";
-import { SimpleIndonesiaMap } from "@/components/SimpleIndonesiaMap";
+import { InteractiveMap } from "@/components/InteractiveMap";
+import { CircularProgress } from "@/components/CircularProgress";
+import { AreaChart } from "@/components/AreaChart";
+import { BudgetCard } from "@/components/BudgetCard";
+import { WeeklyBarChart } from "@/components/WeeklyBarChart";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getAllPSNData } from "@/services/psnApi";
+import { getAllPSNData, getBudgetData } from "@/services/psnApi";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface PSNData {
@@ -20,10 +24,23 @@ interface PSNData {
   sampah: any;
 }
 
+interface BudgetData {
+  total: number;
+  allocated: number;
+  spent: number;
+  remaining: number;
+  percentage: number;
+  monthly: Array<{ month: string; allocated: number; spent: number }>;
+  weekly: Array<{ day: string; value: number }>;
+  programs: Array<{ name: string; allocated: number; spent: number; percentage: number }>;
+  metrics: { desktop: number; mobile: number; tablet: number };
+}
+
 const GeneralClean = () => {
   const { position } = useAuth();
   const [loading, setLoading] = useState(true);
   const [psnData, setPsnData] = useState<PSNData | null>(null);
+  const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
   const [selectedYear, setSelectedYear] = useState('2024');
   const [selectedProvince, setSelectedProvince] = useState('Semua');
   const [selectedKPI, setSelectedKPI] = useState('kpi1');
@@ -32,10 +49,14 @@ const GeneralClean = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await getAllPSNData();
-        setPsnData(data);
+        const [psnDataResult, budgetDataResult] = await Promise.all([
+          getAllPSNData(),
+          getBudgetData()
+        ]);
+        setPsnData(psnDataResult);
+        setBudgetData(budgetDataResult);
       } catch (error) {
-        console.error('Error fetching PSN data:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -268,16 +289,52 @@ const GeneralClean = () => {
               </motion.div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {statCards.map((card, index) => (
-                <CleanStatCard
-                  key={card.title}
-                  title={card.title}
-                  value={card.value}
-                  badge={card.badge}
-                  delay={0.3 + index * 0.1}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <CircularProgress
+                value={budgetData?.percentage || 0}
+                label="Budget Terserap"
+              />
+
+              <div className="md:col-span-3">
+                <BudgetCard
+                  metrics={[
+                    { label: 'Target', value: '45.738', color: '#fbbf24' },
+                    { label: 'Realisasi', value: '39.732', color: '#f87171' },
+                  ]}
+                  data={[
+                    { label: 'Target', values: [45, 52, 48, 55, 50, 58, 54, 60, 56, 62, 58, 65, 60, 68, 64] },
+                    { label: 'Realisasi', values: [35, 42, 38, 45, 40, 48, 44, 50, 46, 52, 48, 55, 50, 58, 54] },
+                  ]}
                 />
-              ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <WeeklyBarChart
+                data={budgetData?.weekly || []}
+                title="Penyerapan Anggaran Mingguan"
+              />
+
+              <AreaChart
+                data={[
+                  { label: '01', value: 425 },
+                  { label: '02', value: 380 },
+                  { label: '03', value: 450 },
+                  { label: '04', value: 420 },
+                  { label: '05', value: 510 },
+                  { label: '06', value: 480 },
+                  { label: '07', value: 365 },
+                  { label: '08', value: 390 },
+                  { label: '09', value: 430 },
+                  { label: '10', value: 410 },
+                  { label: '11', value: 460 },
+                  { label: '12', value: 440 },
+                  { label: '13', value: 268 },
+                  { label: '14', value: 320 },
+                  { label: '15', value: 350 },
+                ]}
+                title="Tren Realisasi Program"
+              />
             </div>
 
             <motion.div
@@ -285,7 +342,7 @@ const GeneralClean = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <SimpleIndonesiaMap
+              <InteractiveMap
                 data={psnData ? getMapData() : undefined}
                 onProvinceClick={(province) => {
                   setSelectedProvince(province);
