@@ -101,6 +101,56 @@ const GeneralClean = () => {
     return previous > 0 ? ((latest - previous) / previous) * 100 : 0;
   };
 
+  const getMapData = () => {
+    if (!psnData) return undefined;
+
+    const provinceCoordinates: Record<string, { cx: number; cy: number; region: string }> = {
+      'Aceh': { cx: 15, cy: 8, region: 'Sumatera' },
+      'Sumatera Utara': { cx: 18, cy: 12, region: 'Sumatera' },
+      'Sumatera Barat': { cx: 15, cy: 18, region: 'Sumatera' },
+      'Riau': { cx: 22, cy: 16, region: 'Sumatera' },
+      'Jambi': { cx: 22, cy: 22, region: 'Sumatera' },
+      'Sumatera Selatan': { cx: 24, cy: 28, region: 'Sumatera' },
+      'Lampung': { cx: 25, cy: 35, region: 'Sumatera' },
+      'Banten': { cx: 33, cy: 38, region: 'Jawa' },
+      'DKI Jakarta': { cx: 35, cy: 38, region: 'Jawa' },
+      'Jawa Barat': { cx: 37, cy: 40, region: 'Jawa' },
+      'Jawa Tengah': { cx: 44, cy: 42, region: 'Jawa' },
+      'DI Yogyakarta': { cx: 46, cy: 44, region: 'Jawa' },
+      'Jawa Timur': { cx: 53, cy: 43, region: 'Jawa' },
+      'Kalimantan Barat': { cx: 42, cy: 16, region: 'Kalimantan' },
+      'Kalimantan Tengah': { cx: 48, cy: 24, region: 'Kalimantan' },
+      'Kalimantan Selatan': { cx: 50, cy: 30, region: 'Kalimantan' },
+      'Kalimantan Timur': { cx: 56, cy: 20, region: 'Kalimantan' },
+      'Sulawesi Utara': { cx: 65, cy: 10, region: 'Sulawesi' },
+      'Sulawesi Tengah': { cx: 63, cy: 20, region: 'Sulawesi' },
+      'Sulawesi Selatan': { cx: 62, cy: 32, region: 'Sulawesi' },
+      'Sulawesi Tenggara': { cx: 66, cy: 30, region: 'Sulawesi' },
+      'Bali': { cx: 52, cy: 45, region: 'Bali-NTT' },
+      'NTB': { cx: 58, cy: 46, region: 'Bali-NTT' },
+      'NTT': { cx: 64, cy: 50, region: 'Bali-NTT' },
+      'Maluku': { cx: 72, cy: 28, region: 'Maluku' },
+      'Maluku Utara': { cx: 70, cy: 18, region: 'Maluku' },
+      'Papua Barat': { cx: 76, cy: 22, region: 'Papua' },
+      'Papua': { cx: 85, cy: 28, region: 'Papua' },
+    };
+
+    return psnData.mbg.provinsi.map((prov: any) => {
+      const coords = provinceCoordinates[prov.prov] || { cx: 50, cy: 30, region: 'Jawa' };
+      const provinceKey = prov.prov.toLowerCase().replace(/\s+/g, '');
+
+      return {
+        id: provinceKey,
+        name: prov.prov,
+        value: Math.round(prov.value * 1000),
+        percentage: Math.round(prov.value),
+        cx: coords.cx,
+        cy: coords.cy,
+        region: coords.region as 'Sumatera' | 'Jawa' | 'Kalimantan' | 'Sulawesi' | 'Papua' | 'Maluku' | 'Bali-NTT',
+      };
+    });
+  };
+
   const kpiCards = psnData ? [
     {
       title: "Makan Bergizi Gratis",
@@ -236,6 +286,7 @@ const GeneralClean = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <SimpleIndonesiaMap
+                data={psnData ? getMapData() : undefined}
                 onProvinceClick={(province) => {
                   setSelectedProvince(province);
                 }}
