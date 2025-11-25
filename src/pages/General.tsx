@@ -5,6 +5,7 @@ import { FilterBar } from "@/components/FilterBar";
 import { ProgramCard } from "@/components/ProgramCard";
 import { TrendMultiChart } from "@/components/TrendMultiChart";
 import { PriorityTable } from "@/components/PriorityTable";
+import { IndonesiaMap } from "@/components/IndonesiaMap";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getAllPSNData } from "@/services/psnApi";
 
@@ -24,6 +25,7 @@ const General = () => {
   const [selectedYear, setSelectedYear] = useState('2024');
   const [selectedProvince, setSelectedProvince] = useState('Semua');
   const [selectedProgram, setSelectedProgram] = useState('Semua Program');
+  const [selectedKPI, setSelectedKPI] = useState('kpi1');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -210,6 +212,13 @@ const General = () => {
               />
             ))}
           </div>
+
+          <IndonesiaMap
+            selectedKPI={selectedKPI}
+            onProvinceClick={(province) => {
+              setSelectedProvince(province);
+            }}
+          />
 
           <TrendMultiChart data={getTrendData()} />
 
