@@ -1,5 +1,6 @@
 import { SPPGDataGrid, type SPPGRow } from "@/components/SPPGDataGrid";
 import { AddSPPGDialog } from "@/components/AddSPPGDialog";
+import { UploadCSVDialog } from "@/components/UploadCSVDialog";
 import { supabase, type SPPGData } from "@/lib/supabase";
 import { Loader2, Database, Users, Building2, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
@@ -71,7 +72,9 @@ const SPPG = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
+            className="flex gap-2"
           >
+            <UploadCSVDialog onSuccess={handleStatusUpdate} />
             <AddSPPGDialog onSuccess={handleStatusUpdate} />
           </motion.div>
         )}
