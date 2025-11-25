@@ -298,12 +298,8 @@ const GeneralClean = () => {
               <div className="md:col-span-3">
                 <BudgetCard
                   metrics={[
-                    { label: 'Target', value: '45.738', color: '#fbbf24' },
-                    { label: 'Realisasi', value: '39.732', color: '#f87171' },
-                  ]}
-                  data={[
-                    { label: 'Target', values: [45, 52, 48, 55, 50, 58, 54, 60, 56, 62, 58, 65, 60, 68, 64] },
-                    { label: 'Realisasi', values: [35, 42, 38, 45, 40, 48, 44, 50, 46, 52, 48, 55, 50, 58, 54] },
+                    { label: 'ut enim ad minim veniam quis nostrud', value: '45.738' },
+                    { label: 'exercitation ullamco laboris nisi ut aliquip', value: '39.732' },
                   ]}
                 />
               </div>

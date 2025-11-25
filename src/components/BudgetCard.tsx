@@ -1,92 +1,133 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 
-interface BudgetMetric {
-  label: string;
-  value: string;
-  change?: string;
-  color: string;
-}
-
 interface BudgetCardProps {
-  metrics: BudgetMetric[];
-  title?: string;
-  data?: Array<{ label: string; values: number[] }>;
+  metrics: Array<{
+    label: string;
+    value: string;
+    sublabel?: string;
+  }>;
 }
 
-export const BudgetCard = ({ metrics, title, data }: BudgetCardProps) => {
-  return (
-    <Card className="bg-gradient-to-br from-indigo-600 via-purple-600 to-purple-700 border-0 shadow-lg overflow-hidden">
-      <div className="p-6">
-        {title && (
-          <h3 className="text-sm font-semibold text-white/90 mb-4">{title}</h3>
-        )}
+export const BudgetCard = ({ metrics }: BudgetCardProps) => {
+  const waveData1 = [45, 52, 48, 55, 50, 58, 54, 60, 56, 62, 58, 65, 60, 68, 64, 70];
+  const waveData2 = [35, 42, 38, 45, 40, 48, 44, 50, 46, 52, 48, 55, 50, 58, 54, 60];
 
-        <div className="flex justify-between items-start mb-6">
+  const createWavePath = (data: number[], offset: number = 0) => {
+    const width = 100;
+    const height = 40;
+    const points = data.map((value, i) => {
+      const x = (i / (data.length - 1)) * width;
+      const y = height - ((value / 100) * height) + offset;
+      return { x, y };
+    });
+
+    let path = `M 0,${height}`;
+    points.forEach((point, i) => {
+      if (i === 0) {
+        path += ` L ${point.x},${point.y}`;
+      } else {
+        const prev = points[i - 1];
+        const cpX = (prev.x + point.x) / 2;
+        path += ` Q ${cpX},${prev.y} ${cpX},${(prev.y + point.y) / 2}`;
+        path += ` Q ${cpX},${point.y} ${point.x},${point.y}`;
+      }
+    });
+    path += ` L ${width},${height} Z`;
+    return path;
+  };
+
+  return (
+    <Card className="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-500 border-0 shadow-lg overflow-hidden relative h-full">
+      <div className="p-5">
+        <div className="flex justify-between items-start mb-4">
           {metrics.map((metric, i) => (
             <motion.div
               key={i}
-              className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2"
+              className="bg-white/15 backdrop-blur-sm rounded-xl px-5 py-3 min-w-[120px]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className="text-xs text-white/70 mb-1">{metric.label}</div>
-              <div className="text-lg font-bold text-white">{metric.value}</div>
-              {metric.change && (
-                <div className="text-xs text-white/80 mt-1">{metric.change}</div>
+              <div className="text-xs text-white/80 mb-1 font-medium">
+                {metric.label}
+              </div>
+              <div className="text-2xl font-bold text-white">
+                {metric.value}
+              </div>
+              {metric.sublabel && (
+                <div className="text-xs text-white/70 mt-1">
+                  {metric.sublabel}
+                </div>
               )}
             </motion.div>
           ))}
         </div>
 
-        {data && (
-          <div className="relative h-24">
-            <svg width="100%" height="100%" viewBox="0 0 400 100" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
-                  <stop offset="100%" stopColor="rgba(255,255,255,0.05)" />
-                </linearGradient>
-                <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="rgba(255,255,255,0.2)" />
-                  <stop offset="100%" stopColor="rgba(255,255,255,0.03)" />
-                </linearGradient>
-              </defs>
+        <div className="relative h-20 mt-4">
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 100 40"
+            preserveAspectRatio="none"
+            className="absolute inset-0"
+          >
+            <defs>
+              <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="rgba(255,255,255,0.25)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0.05)" />
+              </linearGradient>
+              <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="rgba(255,255,255,0.2)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
+              </linearGradient>
+            </defs>
 
-              {data.map((series, seriesIndex) => {
-                const path = series.values.map((value, i) => {
-                  const x = (i / (series.values.length - 1)) * 400;
-                  const y = 50 - (value / 100) * 30 + seriesIndex * 10;
-                  return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-                }).join(' ');
+            <motion.path
+              d={createWavePath(waveData1, 5)}
+              fill="url(#waveGradient1)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+            />
 
-                const filledPath = `${path} L 400,100 L 0,100 Z`;
+            <motion.path
+              d={createWavePath(waveData2, 0)}
+              fill="url(#waveGradient2)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+            />
 
-                return (
-                  <g key={seriesIndex}>
-                    <motion.path
-                      d={filledPath}
-                      fill={`url(#waveGradient${seriesIndex + 1})`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 1, delay: seriesIndex * 0.2 }}
-                    />
-                    <motion.path
-                      d={path}
-                      fill="none"
-                      stroke="rgba(255,255,255,0.5)"
-                      strokeWidth="2"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 2, delay: seriesIndex * 0.2 }}
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
-        )}
+            <motion.path
+              d={waveData1.map((value, i) => {
+                const x = (i / (waveData1.length - 1)) * 100;
+                const y = 40 - ((value / 100) * 40) + 5;
+                return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+              }).join(' ')}
+              fill="none"
+              stroke="rgba(255,255,255,0.6)"
+              strokeWidth="0.5"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 2 }}
+            />
+
+            <motion.path
+              d={waveData2.map((value, i) => {
+                const x = (i / (waveData2.length - 1)) * 100;
+                const y = 40 - ((value / 100) * 40);
+                return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+              }).join(' ')}
+              fill="none"
+              stroke="rgba(255,255,255,0.4)"
+              strokeWidth="0.5"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 2, delay: 0.2 }}
+            />
+          </svg>
+        </div>
       </div>
     </Card>
   );
