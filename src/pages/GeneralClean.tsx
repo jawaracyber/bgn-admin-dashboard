@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Utensils, School, Store, Laptop, CreditCard, Briefcase, Trash2 } from "lucide-react";
 import { CleanKPICard } from "@/components/CleanKPICard";
-import { CleanStatCard } from "@/components/CleanStatCard";
-import { TrendMultiChart } from "@/components/TrendMultiChart";
-import { PriorityTable } from "@/components/PriorityTable";
-import { InteractiveMap } from "@/components/InteractiveMap";
+import { StackedAreaChart } from "@/components/StackedAreaChart";
 import { CircularProgress } from "@/components/CircularProgress";
-import { AreaChart } from "@/components/AreaChart";
 import { BudgetCard } from "@/components/BudgetCard";
+import { MetricsGrid } from "@/components/MetricsGrid";
+import { WeeklyStatsCard } from "@/components/WeeklyStatsCard";
+import { ProgramListCard } from "@/components/ProgramListCard";
+import { BudgetBreakdownCard } from "@/components/BudgetBreakdownCard";
+import { WeeklyLineChart } from "@/components/WeeklyLineChart";
 import { WeeklyBarChart } from "@/components/WeeklyBarChart";
+import { PriorityTable } from "@/components/PriorityTable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getAllPSNData, getBudgetData } from "@/services/psnApi";
 import { useAuth } from "@/contexts/AuthContext";
@@ -278,15 +280,15 @@ const GeneralClean = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="lg:col-span-2"
-              >
-                <TrendMultiChart data={getTrendData()} />
-              </motion.div>
+            <div className="grid grid-cols-1 gap-4">
+              <StackedAreaChart
+                data={[
+                  { label: 'Layer 1', values: Array.from({length: 15}, (_, i) => 30 + Math.sin(i * 0.5) * 10) },
+                  { label: 'Layer 2', values: Array.from({length: 15}, (_, i) => 40 + Math.sin(i * 0.5) * 8) },
+                  { label: 'Layer 3', values: Array.from({length: 15}, (_, i) => 50 + Math.sin(i * 0.5) * 12) },
+                  { label: 'Layer 4', values: Array.from({length: 15}, (_, i) => 60 + Math.sin(i * 0.5) * 15) }
+                ]}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -305,46 +307,27 @@ const GeneralClean = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <WeeklyBarChart
                 data={budgetData?.weekly || []}
-                title="Penyerapan Anggaran Mingguan"
+                title="Activity by Day"
               />
 
-              <AreaChart
-                data={[
-                  { label: '01', value: 425 },
-                  { label: '02', value: 380 },
-                  { label: '03', value: 450 },
-                  { label: '04', value: 420 },
-                  { label: '05', value: 510 },
-                  { label: '06', value: 480 },
-                  { label: '07', value: 365 },
-                  { label: '08', value: 390 },
-                  { label: '09', value: 430 },
-                  { label: '10', value: 410 },
-                  { label: '11', value: 460 },
-                  { label: '12', value: 440 },
-                  { label: '13', value: 268 },
-                  { label: '14', value: 320 },
-                  { label: '15', value: 350 },
-                ]}
-                title="Tren Realisasi Program"
-              />
+              <WeeklyLineChart />
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <InteractiveMap
-                data={psnData ? getMapData() : undefined}
-                onProvinceClick={(province) => {
-                  setSelectedProvince(province);
-                }}
-              />
-            </motion.div>
+            <MetricsGrid
+              desktop={budgetData?.metrics.desktop || 0}
+              mobile={budgetData?.metrics.mobile || 0}
+              tablet={budgetData?.metrics.tablet || 0}
+            />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <BudgetBreakdownCard />
+              <WeeklyStatsCard />
+            </div>
+
+            <ProgramListCard />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
