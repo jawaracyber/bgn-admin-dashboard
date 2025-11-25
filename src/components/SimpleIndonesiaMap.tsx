@@ -45,120 +45,20 @@ export const SimpleIndonesiaMap = ({ onProvinceClick }: SimpleIndonesiaMapProps)
         <div className="p-6">
           <div className="mb-4">
             <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-              WORLD MAP
+              PETA INDONESIA
             </h3>
-            <p className="text-sm text-gray-600">Distribution by Region</p>
+            <p className="text-sm text-gray-600">Distribusi berdasarkan wilayah</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <div className="relative w-full aspect-[16/10] bg-gradient-to-br from-teal-50 to-emerald-50 rounded-xl overflow-hidden">
-                <svg viewBox="0 0 800 500" className="w-full h-full">
-                  <motion.path
-                    d="M 100 150 Q 150 100 250 150 L 300 200 Q 280 250 200 220 L 120 180 Z"
-                    fill={hoveredProvince === 'sumatra' ? '#34d399' : '#6ee7b7'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('sumatra')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[0])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="180" y="180" className="text-xs font-medium fill-white pointer-events-none">
-                    Sumatera
-                  </text>
-
-                  <motion.path
-                    d="M 320 220 L 480 200 L 520 280 L 450 320 L 340 300 Z"
-                    fill={hoveredProvince === 'jawa' ? '#16a34a' : '#34d399'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('jawa')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[1])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="400" y="270" className="text-xs font-medium fill-white pointer-events-none">
-                    Jawa
-                  </text>
-
-                  <motion.path
-                    d="M 350 100 Q 400 80 500 120 L 520 180 Q 480 200 420 180 L 360 140 Z"
-                    fill={hoveredProvince === 'kalimantan' ? '#34d399' : '#86efac'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('kalimantan')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[2])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="420" y="145" className="text-xs font-medium fill-white pointer-events-none">
-                    Kalimantan
-                  </text>
-
-                  <motion.path
-                    d="M 540 140 Q 590 120 640 160 L 620 220 Q 580 240 540 210 Z"
-                    fill={hoveredProvince === 'sulawesi' ? '#34d399' : '#6ee7b7'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('sulawesi')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[3])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="570" y="180" className="text-xs font-medium fill-white pointer-events-none">
-                    Sulawesi
-                  </text>
-
-                  <motion.path
-                    d="M 660 180 L 740 200 L 760 280 L 700 300 L 650 260 Z"
-                    fill={hoveredProvince === 'papua' ? '#6ee7b7' : '#bbf7d0'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('papua')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[4])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="690" y="240" className="text-xs font-medium fill-white pointer-events-none">
-                    Papua
-                  </text>
-
-                  <motion.path
-                    d="M 630 240 Q 660 230 680 260 L 665 290 Q 640 295 625 275 Z"
-                    fill={hoveredProvince === 'maluku' ? '#34d399' : '#a7f3d0'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('maluku')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[5])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="640" y="270" className="text-[10px] font-medium fill-white pointer-events-none">
-                    Maluku
-                  </text>
-
-                  <motion.path
-                    d="M 530 290 L 580 280 L 600 320 L 560 340 L 520 320 Z"
-                    fill={hoveredProvince === 'bali-nusa' ? '#34d399' : '#6ee7b7'}
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-300"
-                    onMouseEnter={() => setHoveredProvince('bali-nusa')}
-                    onMouseLeave={() => setHoveredProvince(null)}
-                    onClick={() => handleProvinceClick(provinces[6])}
-                    whileHover={{ scale: 1.02 }}
-                  />
-                  <text x="545" y="315" className="text-[10px] font-medium fill-white pointer-events-none">
-                    Bali-NT
-                  </text>
-                </svg>
+              <div className="relative w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden p-4">
+                <img
+                  src="/indonesia.svg"
+                  alt="Peta Indonesia"
+                  className="w-full h-auto opacity-80 hover:opacity-100 transition-opacity duration-300"
+                  style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' }}
+                />
 
                 {hoveredProvince && (
                   <motion.div
@@ -179,7 +79,7 @@ export const SimpleIndonesiaMap = ({ onProvinceClick }: SimpleIndonesiaMapProps)
 
             <div className="space-y-3">
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-gray-700 mb-3">Regional Statistics</h4>
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Statistik Regional</h4>
               </div>
               {provinces.map((province) => (
                 <motion.div

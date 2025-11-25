@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Utensils, School, Store, Laptop, CreditCard, Briefcase, Trash2, Calendar } from "lucide-react";
+import { Utensils, School, Store, Laptop, CreditCard, Briefcase, Trash2 } from "lucide-react";
 import { CleanKPICard } from "@/components/CleanKPICard";
 import { CleanStatCard } from "@/components/CleanStatCard";
 import { TrendMultiChart } from "@/components/TrendMultiChart";
 import { PriorityTable } from "@/components/PriorityTable";
 import { SimpleIndonesiaMap } from "@/components/SimpleIndonesiaMap";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { getAllPSNData } from "@/services/psnApi";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PSNData {
   mbg: any;
@@ -21,6 +21,7 @@ interface PSNData {
 }
 
 const GeneralClean = () => {
+  const { position } = useAuth();
   const [loading, setLoading] = useState(true);
   const [psnData, setPsnData] = useState<PSNData | null>(null);
   const [selectedYear, setSelectedYear] = useState('2024');
@@ -168,20 +169,14 @@ const GeneralClean = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center justify-between mb-6"
+          className="mb-6"
         >
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-              DASHBOARD
-            </h1>
-            <p className="text-sm text-gray-500">
-              Welcome back, {selectedProvince === 'Semua' ? 'Administrator' : selectedProvince}
-            </p>
-          </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            <span className="hidden sm:inline">1 Jan 2024 - 31 Des 2024</span>
-          </Button>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+            DASHBOARD
+          </h1>
+          <p className="text-sm text-gray-500">
+            Welcome back, {position}
+          </p>
         </motion.div>
 
         {loading ? (
