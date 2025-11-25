@@ -5,7 +5,7 @@ import { CleanKPICard } from "@/components/CleanKPICard";
 import { CleanStatCard } from "@/components/CleanStatCard";
 import { TrendMultiChart } from "@/components/TrendMultiChart";
 import { PriorityTable } from "@/components/PriorityTable";
-import { IndonesiaMap } from "@/components/IndonesiaMap";
+import { SimpleIndonesiaMap } from "@/components/SimpleIndonesiaMap";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { getAllPSNData } from "@/services/psnApi";
@@ -240,8 +240,7 @@ const GeneralClean = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <IndonesiaMap
-                selectedKPI={selectedKPI}
+              <SimpleIndonesiaMap
                 onProvinceClick={(province) => {
                   setSelectedProvince(province);
                 }}
