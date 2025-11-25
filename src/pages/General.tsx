@@ -1,201 +1,230 @@
-import CardKPI from "@/components/CardKPI";
-import ChartBar from "@/components/ChartBar";
-import ChartStacked from "@/components/ChartStacked";
-import ChartPie from "@/components/ChartPie";
-import ChartLine from "@/components/ChartLine";
-import { DollarSign, TrendingUp, FileText, CheckCircle, BarChart3 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Utensils, School, Store, Laptop, CreditCard, Briefcase, Trash2 } from "lucide-react";
+import { FilterBar } from "@/components/FilterBar";
+import { ProgramCard } from "@/components/ProgramCard";
+import { TrendMultiChart } from "@/components/TrendMultiChart";
+import { PriorityTable } from "@/components/PriorityTable";
+import { IndonesiaMap } from "@/components/IndonesiaMap";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getAllPSNData } from "@/services/psnApi";
 
-const budgetData = [
-  { name: "Jan", value: 4200000000 },
-  { name: "Feb", value: 5800000000 },
-  { name: "Mar", value: 6500000000 },
-  { name: "Apr", value: 7200000000 },
-  { name: "Mei", value: 8100000000 },
-  { name: "Jun", value: 9200000000 },
-];
-
-const stackedData = [
-  { month: "Jan", lead: 65, qualify: 28, solution: 20, proposal: 15, finalize: 10 },
-  { month: "Feb", lead: 90, qualify: 35, solution: 25, proposal: 18, finalize: 12 },
-  { month: "Mar", lead: 105, qualify: 42, solution: 30, proposal: 22, finalize: 18 },
-  { month: "Apr", lead: 85, qualify: 38, solution: 28, proposal: 20, finalize: 15 },
-  { month: "Mei", lead: 120, qualify: 48, solution: 35, proposal: 25, finalize: 20 },
-  { month: "Jun", lead: 95, qualify: 40, solution: 32, proposal: 24, finalize: 17 },
-];
-
-const provinceData = [
-  { name: "Jawa Barat", value: 245 },
-  { name: "Jawa Tengah", value: 198 },
-  { name: "Jawa Timur", value: 187 },
-  { name: "Sumatera Utara", value: 156 },
-  { name: "Sulawesi Selatan", value: 142 },
-];
-
-const lineData = [
-  { month: "Jan", value: 65, target: 70 },
-  { month: "Feb", value: 72, target: 75 },
-  { month: "Mar", value: 78, target: 80 },
-  { month: "Apr", value: 82, target: 85 },
-  { month: "Mei", value: 88, target: 90 },
-  { month: "Jun", value: 92, target: 95 },
-];
-
-const rankingData = [
-  { name: "DKI Jakarta", value: 312, color: "hsl(var(--chart-teal))" },
-  { name: "Jawa Barat", value: 245, color: "hsl(var(--chart-blue))" },
-  { name: "Jawa Tengah", value: 198, color: "hsl(var(--chart-navy))" },
-  { name: "Jawa Timur", value: 187, color: "hsl(var(--chart-red))" },
-  { name: "Sumatera Utara", value: 156, color: "hsl(var(--chart-yellow))" },
-];
+interface PSNData {
+  mbg: any;
+  sekolah: any;
+  koperasi: any;
+  digitalisasi: any;
+  kesejahteraan: any;
+  umkm: any;
+  sampah: any;
+}
 
 const General = () => {
+  const [loading, setLoading] = useState(true);
+  const [psnData, setPsnData] = useState<PSNData | null>(null);
+  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedProvince, setSelectedProvince] = useState('Semua');
+  const [selectedProgram, setSelectedProgram] = useState('Semua Program');
+  const [selectedKPI, setSelectedKPI] = useState('kpi1');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await getAllPSNData();
+        setPsnData(data);
+      } catch (error) {
+        console.error('Error fetching PSN data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedYear, selectedProvince, selectedProgram]);
+
+  const getTrendData = () => {
+    if (!psnData) return [];
+
+    const dates = psnData.mbg.timeseries.map((t: any) => t.date);
+    return dates.map((date: string, index: number) => ({
+      date,
+      mbg: psnData.mbg.timeseries[index]?.value || 0,
+      sekolah: psnData.sekolah.timeseries[index]?.value || 0,
+      koperasi: psnData.koperasi.timeseries[index]?.value || 0,
+      digitalisasi: psnData.digitalisasi.timeseries[index]?.value || 0,
+      kesejahteraan: psnData.kesejahteraan.timeseries[index]?.value || 0,
+      umkm: psnData.umkm.timeseries[index]?.value || 0,
+      sampah: psnData.sampah.timeseries[index]?.value || 0,
+    }));
+  };
+
+  const getPriorityTableData = () => {
+    if (!psnData) return [];
+
+    const provinceNames = psnData.mbg.provinsi.map((p: any) => p.prov);
+
+    return provinceNames.map((provinsi: string) => {
+      const mbg = psnData.mbg.provinsi.find((p: any) => p.prov === provinsi)?.value || 0;
+      const sekolah = psnData.sekolah.provinsi.find((p: any) => p.prov === provinsi)?.value || 0;
+      const digitalisasi = psnData.digitalisasi.provinsi.find((p: any) => p.prov === provinsi)?.value || 0;
+      const kesejahteraan = psnData.kesejahteraan.provinsi.find((p: any) => p.prov === provinsi)?.value || 0;
+      const umkm = psnData.umkm.provinsi.find((p: any) => p.prov === provinsi)?.value || 0;
+      const sampah = psnData.sampah.provinsi.find((p: any) => p.prov === provinsi)?.value || 0;
+
+      const priorityScore =
+        0.3 * (1 - mbg / 100) +
+        0.2 * (1 - sekolah / 100) +
+        0.1 * (1 - digitalisasi / 100) +
+        0.2 * (1 - kesejahteraan / 100) +
+        0.1 * (1 - umkm / 100) +
+        0.1 * (sampah / 100);
+
+      return {
+        provinsi,
+        mbg,
+        sekolah,
+        digitalisasi,
+        kesejahteraan,
+        umkm,
+        sampah,
+        priorityScore,
+      };
+    });
+  };
+
+  const programs = psnData ? [
+    {
+      title: "Makan Bergizi Gratis",
+      icon: Utensils,
+      color: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      data: psnData.mbg,
+      unit: " porsi"
+    },
+    {
+      title: "Sekolah Rakyat",
+      icon: School,
+      color: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+      data: psnData.sekolah,
+      unit: " sekolah"
+    },
+    {
+      title: "Koperasi Merah Putih",
+      icon: Store,
+      color: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      data: psnData.koperasi,
+      unit: " koperasi"
+    },
+    {
+      title: "Digitalisasi Pendidikan",
+      icon: Laptop,
+      color: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+      data: psnData.digitalisasi,
+      unit: " sekolah"
+    },
+    {
+      title: "Kartu Kesejahteraan",
+      icon: CreditCard,
+      color: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+      data: psnData.kesejahteraan,
+      unit: " penerima"
+    },
+    {
+      title: "Kartu Usaha Afirmatif",
+      icon: Briefcase,
+      color: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+      data: psnData.umkm,
+      unit: " UMKM"
+    },
+    {
+      title: "Pengelolaan Sampah",
+      icon: Trash2,
+      color: "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+      data: psnData.sampah,
+      unit: " kab/kota"
+    }
+  ] : [];
+
   return (
     <div className="space-y-6 md:space-y-8 p-4 md:p-6 lg:p-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="text-center"
       >
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-2 md:mb-3">
-          Dashboard General
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-3">
+          DASHBOARD PROGRAM STRATEGIS NASIONAL
         </h1>
         <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
-          Ringkasan data dan analitik program nasional
+          Monitoring dan evaluasi 7 Program Strategis Nasional Indonesia
         </p>
       </motion.div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <CardKPI
-          title="Total Anggaran"
-          value="Rp 125 T"
-          icon={DollarSign}
-          trend="+12.5%"
-          trendUp={true}
-          gradient="primary"
-          delay={0.1}
-        />
-        <CardKPI
-          title="Anggaran Terserap"
-          value="Rp 92.5 T"
-          icon={TrendingUp}
-          trend="74% realisasi"
-          trendUp={true}
-          gradient="secondary"
-          delay={0.2}
-        />
-        <CardKPI
-          title="Total Program"
-          value="1,247"
-          icon={FileText}
-          trend="+8.3%"
-          trendUp={true}
-          gradient="accent"
-          delay={0.3}
-        />
-        <CardKPI
-          title="Penyelesaian"
-          value="87.2%"
-          icon={CheckCircle}
-          trend="+5.1%"
-          trendUp={true}
-          gradient="warm"
-          delay={0.4}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <ChartBar
-            data={budgetData}
-            title="Penyerapan Anggaran per Bulan"
-            subtitle="Data penyerapan anggaran tahun 2025"
-          />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <ChartLine
-            data={lineData}
-            title="Peningkatan Hasil Program"
-            subtitle="Perbandingan hasil aktual vs target"
-          />
-        </motion.div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <ChartStacked
-            data={stackedData}
-            title="Permasalahan Lapangan per Kategori"
-            subtitle="Distribusi masalah berdasarkan tahapan"
-          />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <ChartPie
-            data={provinceData}
-            title="Persebaran Program per Provinsi"
-            subtitle="5 provinsi dengan program terbanyak"
-          />
-        </motion.div>
-      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="glass rounded-2xl p-4 md:p-6 lg:p-8 shadow-xl border border-white/20 card-hover"
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <div className="mb-4 md:mb-6 flex items-center gap-2 md:gap-3">
-          <motion.div
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.6 }}
-            className="w-10 h-10 md:w-12 md:h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg"
-          >
-            <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />
-          </motion.div>
-          <div>
-            <h3 className="text-lg md:text-xl font-bold text-foreground">Ranking Provinsi</h3>
-            <p className="text-xs md:text-sm text-muted-foreground">Berdasarkan jumlah program aktif</p>
-          </div>
-        </div>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={rankingData} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-            <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
-            <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={10} width={100} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '12px',
-                padding: '12px',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
-              }}
-            />
-            <Bar dataKey="value" radius={[0, 12, 12, 0]}>
-              {rankingData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <FilterBar
+          selectedYear={selectedYear}
+          selectedProvince={selectedProvince}
+          selectedProgram={selectedProgram}
+          onYearChange={setSelectedYear}
+          onProvinceChange={setSelectedProvince}
+          onProgramChange={setSelectedProgram}
+        />
       </motion.div>
+
+      {loading ? (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(7)].map((_, i) => (
+              <div key={i} className="space-y-3 p-6 glass rounded-2xl border border-white/20">
+                <Skeleton className="h-12 w-12 rounded-xl" />
+                <Skeleton className="h-4 w-3/4" />
+                <div className="grid grid-cols-2 gap-3">
+                  <Skeleton className="h-16 rounded-lg" />
+                  <Skeleton className="h-16 rounded-lg" />
+                </div>
+                <Skeleton className="h-12 w-full" />
+              </div>
+            ))}
+          </div>
+          <Skeleton className="h-96 w-full rounded-2xl" />
+          <Skeleton className="h-96 w-full rounded-2xl" />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {programs.map((program, index) => (
+              <ProgramCard
+                key={program.title}
+                title={program.title}
+                icon={program.icon}
+                target={program.data.target}
+                realisasi={program.data.realisasi}
+                persentase={program.data.persentase}
+                timeseries={program.data.timeseries}
+                color={program.color}
+                delay={0.1 + index * 0.05}
+                unit={program.unit}
+              />
+            ))}
+          </div>
+
+          <IndonesiaMap
+            selectedKPI={selectedKPI}
+            onProvinceClick={(province) => {
+              setSelectedProvince(province);
+            }}
+          />
+
+          <TrendMultiChart data={getTrendData()} />
+
+          <PriorityTable data={getPriorityTableData()} />
+        </>
+      )}
     </div>
   );
 };

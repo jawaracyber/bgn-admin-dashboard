@@ -101,6 +101,13 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      boxShadow: {
+        'soft': '0 2px 12px 0 rgba(0, 0, 0, 0.09)',
+        'soft-lg': '0 8px 26px -4px rgba(0, 0, 0, 0.15), 0 8px 9px -5px rgba(0, 0, 0, 0.06)',
+        'soft-xl': '0 20px 27px 0 rgba(0, 0, 0, 0.05)',
+        'soft-2xl': '0 23px 45px rgba(0, 0, 0, 0.11), 0 16px 28px rgba(0, 0, 0, 0.08)',
+        'soft-inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
