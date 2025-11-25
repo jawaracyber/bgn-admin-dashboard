@@ -1,12 +1,14 @@
 import { SPPGDataGrid, type SPPGRow } from "@/components/SPPGDataGrid";
 import { AddSPPGDialog } from "@/components/AddSPPGDialog";
 import { supabase, type SPPGData } from "@/lib/supabase";
-import { Loader2, Database, Users, Building2, TrendingUp } from "lucide-react";
+import { Loader2, Database, Users, Building2, TrendingUp, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import CardKPI from "@/components/CardKPI";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { exportSPPGToExcel } from "@/utils/excelExport";
 
 const fetchSPPGData = async (): Promise<SPPGRow[]> => {
   const { data, error } = await supabase
@@ -42,6 +44,28 @@ const SPPG = () => {
     toast.success('Data berhasil dimuat ulang');
   };
 
+  const handleExportToExcel = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sppg')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        toast.error('Tidak ada data untuk diexport');
+        return;
+      }
+
+      exportSPPGToExcel(data);
+      toast.success(`Berhasil export ${data.length} data SPPG ke Excel`);
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      toast.error('Gagal export ke Excel');
+    }
+  };
+
   const approvedCount = sppgData.filter(item =>
     item.prog_stat === "APPROVED" || item.prog_stat === "APPROVED KUOTA"
   ).length;
@@ -66,15 +90,32 @@ const SPPG = () => {
             Sistem Pengelolaan dan Pemantauan SPPG Nasional
           </p>
         </div>
-        {!isReadOnly && (
+        <div className="flex gap-2">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
           >
-            <AddSPPGDialog onSuccess={handleStatusUpdate} />
+            <Button
+              onClick={handleExportToExcel}
+              variant="outline"
+              className="gap-2"
+              disabled={loading || sppgData.length === 0}
+            >
+              <Download className="w-4 h-4" />
+              Export Excel
+            </Button>
           </motion.div>
-        )}
+          {!isReadOnly && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <AddSPPGDialog onSuccess={handleStatusUpdate} />
+            </motion.div>
+          )}
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
