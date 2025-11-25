@@ -80,6 +80,7 @@ const handleStatusChange = async (id: string, newStatus: string, onStatusUpdate?
       body: JSON.stringify({
         id_sppg: id,
         prog_stat: newStatus,
+        reff_attention: 'PR07',
       }),
     });
 
@@ -87,10 +88,8 @@ const handleStatusChange = async (id: string, newStatus: string, onStatusUpdate?
       throw new Error('Gagal memperbarui status');
     }
 
-    toast.success('Status berhasil diperbarui');
-    if (onStatusUpdate) {
-      onStatusUpdate();
-    }
+    toast.success('Status dan Reff Attention berhasil diperbarui');
+    window.location.reload();
   } catch (error) {
     toast.error('Gagal memperbarui status');
     console.error(error);
