@@ -19,11 +19,11 @@ Deno.serve(async (req: Request) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { id_sppg, prog_stat, reff_attention } = await req.json();
+    const { id_sppg, prog_stat } = await req.json();
 
-    if (!id_sppg) {
+    if (!id_sppg || !prog_stat) {
       return new Response(
-        JSON.stringify({ error: 'id_sppg wajib diisi' }),
+        JSON.stringify({ error: 'id_sppg dan prog_stat wajib diisi' }),
         {
           status: 400,
           headers: {
@@ -34,13 +34,9 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const updateData: any = {};
-    if (prog_stat) updateData.prog_stat = prog_stat;
-    if (reff_attention !== undefined) updateData.reff_attention = reff_attention;
-
     const { data, error } = await supabase
       .from('sppg')
-      .update(updateData)
+      .update({ prog_stat })
       .eq('id', id_sppg)
       .select();
 
