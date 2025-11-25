@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
+import { Wallet, TrendingUp, Building2 } from 'lucide-react';
 
 interface BudgetCardProps {
   metrics: Array<{
@@ -10,123 +11,107 @@ interface BudgetCardProps {
 }
 
 export const BudgetCard = ({ metrics }: BudgetCardProps) => {
-  const waveData1 = [45, 52, 48, 55, 50, 58, 54, 60, 56, 62, 58, 65, 60, 68, 64, 70];
-  const waveData2 = [35, 42, 38, 45, 40, 48, 44, 50, 46, 52, 48, 55, 50, 58, 54, 60];
-
-  const createWavePath = (data: number[], offset: number = 0) => {
-    const width = 100;
-    const height = 40;
-    const points = data.map((value, i) => {
-      const x = (i / (data.length - 1)) * width;
-      const y = height - ((value / 100) * height) + offset;
-      return { x, y };
-    });
-
-    let path = `M 0,${height}`;
-    points.forEach((point, i) => {
-      if (i === 0) {
-        path += ` L ${point.x},${point.y}`;
-      } else {
-        const prev = points[i - 1];
-        const cpX = (prev.x + point.x) / 2;
-        path += ` Q ${cpX},${prev.y} ${cpX},${(prev.y + point.y) / 2}`;
-        path += ` Q ${cpX},${point.y} ${point.x},${point.y}`;
-      }
-    });
-    path += ` L ${width},${height} Z`;
-    return path;
-  };
+  const budgetData = [
+    {
+      icon: Wallet,
+      title: 'Total APBN 2025',
+      value: 'Rp 3,613.1',
+      unit: 'Triliun',
+      subtitle: 'Anggaran Pendapatan dan Belanja Negara',
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-500/10'
+    },
+    {
+      icon: Building2,
+      title: 'Belanja Pemerintah Pusat',
+      value: 'Rp 2,693.2',
+      unit: 'Triliun',
+      subtitle: 'Termasuk alokasi K/L dan program strategis',
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-500/10'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Transfer ke Daerah',
+      value: 'Rp 919.9',
+      unit: 'Triliun',
+      subtitle: 'Dana untuk pembangunan daerah',
+      color: 'from-emerald-500 to-emerald-600',
+      bgColor: 'bg-emerald-500/10'
+    }
+  ];
 
   return (
-    <Card className="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-500 border-0 shadow-soft-xl overflow-hidden relative h-full rounded-2xl">
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-4">
-          {metrics.map((metric, i) => (
-            <motion.div
-              key={i}
-              className="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-3 min-w-[120px] shadow-soft"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <div className="text-xs text-white/80 mb-1 font-medium">
-                {metric.label}
-              </div>
-              <div className="text-2xl font-bold text-white">
-                {metric.value}
-              </div>
-              {metric.sublabel && (
-                <div className="text-xs text-white/70 mt-1">
-                  {metric.sublabel}
-                </div>
-              )}
-            </motion.div>
-          ))}
+    <Card className="bg-gradient-to-br from-indigo-600 via-purple-600 to-purple-500 border-0 shadow-soft-xl overflow-hidden relative h-full rounded-2xl">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
+
+      <div className="relative p-6">
+        <div className="mb-6">
+          <h3 className="text-white text-lg font-bold mb-1">APBN 2025 Indonesia</h3>
+          <p className="text-white/70 text-sm">Anggaran Belanja Program Strategis Nasional</p>
         </div>
 
-        <div className="relative h-20 mt-4">
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 100 40"
-            preserveAspectRatio="none"
-            className="absolute inset-0"
-          >
-            <defs>
-              <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="rgba(255,255,255,0.25)" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0.05)" />
-              </linearGradient>
-              <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="rgba(255,255,255,0.2)" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
-              </linearGradient>
-            </defs>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {budgetData.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.15, duration: 0.5 }}
+                className="bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-soft-lg border border-white/20 hover:bg-white/15 transition-all duration-300"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`w-12 h-12 rounded-xl ${item.bgColor} backdrop-blur-sm flex items-center justify-center`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-white/20 rounded-lg">
+                    <TrendingUp className="w-3 h-3 text-white" />
+                    <span className="text-xs font-bold text-white">2025</span>
+                  </div>
+                </div>
 
-            <motion.path
-              d={createWavePath(waveData1, 5)}
-              fill="url(#waveGradient1)"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-            />
+                <div className="mb-2">
+                  <h4 className="text-white/90 text-xs font-semibold mb-1">{item.title}</h4>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-white text-2xl font-bold">{item.value}</span>
+                    <span className="text-white/70 text-sm font-medium">{item.unit}</span>
+                  </div>
+                </div>
 
-            <motion.path
-              d={createWavePath(waveData2, 0)}
-              fill="url(#waveGradient2)"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.2 }}
-            />
+                <p className="text-white/60 text-xs leading-relaxed">{item.subtitle}</p>
 
-            <motion.path
-              d={waveData1.map((value, i) => {
-                const x = (i / (waveData1.length - 1)) * 100;
-                const y = 40 - ((value / 100) * 40) + 5;
-                return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-              }).join(' ')}
-              fill="none"
-              stroke="rgba(255,255,255,0.6)"
-              strokeWidth="0.5"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 2 }}
-            />
+                <div className="mt-3 h-1 bg-white/10 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ delay: 0.5 + index * 0.15, duration: 1 }}
+                    className={`h-full bg-gradient-to-r ${item.color}`}
+                  />
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
 
-            <motion.path
-              d={waveData2.map((value, i) => {
-                const x = (i / (waveData2.length - 1)) * 100;
-                const y = 40 - ((value / 100) * 40);
-                return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-              }).join(' ')}
-              fill="none"
-              stroke="rgba(255,255,255,0.4)"
-              strokeWidth="0.5"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 2, delay: 0.2 }}
-            />
-          </svg>
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+            <div className="text-white text-lg font-bold">Rp 722.6T</div>
+            <div className="text-white/70 text-xs mt-1">Pendidikan</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+            <div className="text-white text-lg font-bold">Rp 504.7T</div>
+            <div className="text-white/70 text-xs mt-1">Perlindungan Sosial</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+            <div className="text-white text-lg font-bold">Rp 400.3T</div>
+            <div className="text-white/70 text-xs mt-1">Infrastruktur</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+            <div className="text-white text-lg font-bold">Rp 197.8T</div>
+            <div className="text-white/70 text-xs mt-1">Kesehatan</div>
+          </div>
         </div>
       </div>
     </Card>

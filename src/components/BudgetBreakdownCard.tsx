@@ -1,56 +1,69 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-
-interface BudgetItem {
-  value: string;
-  label: string;
-  sublabel: string;
-}
+import { Wallet, TrendingUp, Building2 } from 'lucide-react';
 
 export const BudgetBreakdownCard = () => {
-  const items: BudgetItem[] = [
+  const topMinistries = [
     {
-      value: '12.364',
-      label: 'nulla',
-      sublabel: 'Lorem ipsum dolor sit amet consectetur adipisicing elit'
+      name: 'Kementerian Pertahanan',
+      value: '166.26',
+      percentage: 6.2,
+      color: '#ef4444',
+      icon: '🛡️'
     },
     {
-      value: '5.947',
-      label: 'tempor',
-      sublabel: 'incididunt ut labore et dolore magna aliqua ut enim ad minim'
+      name: 'Polri',
+      value: '126.62',
+      percentage: 4.7,
+      color: '#3b82f6',
+      icon: '👮'
     },
     {
-      value: '17.490',
-      label: 'diusa',
-      sublabel: 'exercitation ullamco laboris nisi ut aliquip ex ea commodo'
+      name: 'Kementerian PUPR',
+      value: '116.22',
+      percentage: 4.3,
+      color: '#8b5cf6',
+      icon: '🏗️'
     }
   ];
 
-  const circleColors = ['#6366f1', '#ec4899', '#8b5cf6'];
+  const prioritySectors = [
+    {
+      name: 'Pendidikan',
+      value: '722.6',
+      description: 'Alokasi terbesar untuk SDM unggul dan fasilitas pendidikan'
+    },
+    {
+      name: 'Perlindungan Sosial',
+      value: '504.7',
+      description: 'Termasuk Program MBG dan bantuan sosial'
+    },
+    {
+      name: 'Infrastruktur',
+      value: '400.3',
+      description: 'Pembangunan konektivitas dan fasilitas umum'
+    }
+  ];
 
   return (
-    <Card className="bg-white border border-gray-200 shadow-sm">
+    <Card className="bg-white border-0 shadow-soft-lg rounded-2xl">
       <div className="p-6">
         <div className="mb-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-1">Deserunt</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-1">Alokasi Anggaran K/L</h3>
           <div className="flex items-center gap-3 mt-4">
-            <div className="bg-pink-50 p-3 rounded-lg">
-              <svg className="w-8 h-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-3 rounded-xl shadow-soft">
+              <Wallet className="w-8 h-8 text-white" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-gray-900">3,425.67</div>
-              <div className="text-xs text-gray-500">sed do eiusmod tempor incididunt ut labore</div>
+              <div className="text-3xl font-bold text-gray-900">Rp 2,693.2 T</div>
+              <div className="text-xs text-gray-500">Belanja Pemerintah Pusat 2025</div>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-center gap-8 my-8">
-          {circleColors.map((color, index) => {
-            const sizes = [80, 100, 80];
-            const values = ['465', '778', '501'];
-            const labels = ['nulla', 'tempor', 'diusa'];
+        <div className="flex justify-center gap-6 my-8">
+          {topMinistries.map((ministry, index) => {
+            const sizes = [90, 110, 90];
 
             return (
               <motion.div
@@ -58,38 +71,52 @@ export const BudgetBreakdownCard = () => {
                 className="relative flex flex-col items-center"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2 + index * 0.1, type: "spring" }}
+                transition={{ delay: 0.2 + index * 0.1, type: "spring", stiffness: 200 }}
               >
                 <div
-                  className="rounded-full flex items-center justify-center shadow-lg"
+                  className="rounded-full flex flex-col items-center justify-center shadow-soft-lg relative overflow-hidden"
                   style={{
                     width: sizes[index],
                     height: sizes[index],
-                    backgroundColor: color,
+                    backgroundColor: ministry.color,
                   }}
                 >
-                  <div className="text-white text-xl font-bold">{values[index]}</div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+                  <div className="relative z-10">
+                    <div className="text-3xl mb-1">{ministry.icon}</div>
+                    <div className="text-white text-lg font-bold">{ministry.value}T</div>
+                    <div className="text-white/80 text-xs">{ministry.percentage}%</div>
+                  </div>
                 </div>
-                <div className="mt-3 text-xs font-medium text-gray-600">{labels[index]}</div>
+                <div className="mt-3 text-xs font-semibold text-gray-700 text-center max-w-[100px]">
+                  {ministry.name}
+                </div>
               </motion.div>
             );
           })}
         </div>
 
         <div className="space-y-4 mt-6">
-          {items.map((item, index) => (
+          <h4 className="text-sm font-bold text-gray-700 mb-3">Sektor Prioritas APBN 2025</h4>
+          {prioritySectors.map((sector, index) => (
             <motion.div
               key={index}
-              className="border-t border-gray-100 pt-4 first:border-t-0 first:pt-0"
+              className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 shadow-soft border border-gray-100"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 + index * 0.1 }}
             >
-              <div className="text-2xl font-bold text-gray-900 mb-1">
-                {item.value}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600" />
+                  <span className="font-bold text-gray-800">{sector.name}</span>
+                </div>
+                <div className="text-xl font-bold text-gray-900">
+                  Rp {sector.value}T
+                </div>
               </div>
-              <p className="text-xs text-gray-500 leading-relaxed">
-                {item.sublabel}
+              <p className="text-xs text-gray-500 leading-relaxed pl-4">
+                {sector.description}
               </p>
             </motion.div>
           ))}

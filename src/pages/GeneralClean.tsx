@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Utensils, School, Store, Laptop, CreditCard, Briefcase, Trash2 } from "lucide-react";
 import { CleanKPICard } from "@/components/CleanKPICard";
-import { StackedAreaChart } from "@/components/StackedAreaChart";
+import { PSNProgressChart } from "@/components/PSNProgressChart";
 import { CircularProgress } from "@/components/CircularProgress";
 import { BudgetCard } from "@/components/BudgetCard";
 import { MetricsGrid } from "@/components/MetricsGrid";
@@ -10,7 +10,6 @@ import { WeeklyStatsCard } from "@/components/WeeklyStatsCard";
 import { ProgramListCard } from "@/components/ProgramListCard";
 import { BudgetBreakdownCard } from "@/components/BudgetBreakdownCard";
 import { WeeklyLineChart } from "@/components/WeeklyLineChart";
-import { WeeklyBarChart } from "@/components/WeeklyBarChart";
 import { PriorityTable } from "@/components/PriorityTable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getAllPSNData, getBudgetData } from "@/services/psnApi";
@@ -280,40 +279,25 @@ const GeneralClean = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-              <StackedAreaChart
-                data={[
-                  { label: 'Layer 1', values: Array.from({length: 15}, (_, i) => 30 + Math.sin(i * 0.5) * 10) },
-                  { label: 'Layer 2', values: Array.from({length: 15}, (_, i) => 40 + Math.sin(i * 0.5) * 8) },
-                  { label: 'Layer 3', values: Array.from({length: 15}, (_, i) => 50 + Math.sin(i * 0.5) * 12) },
-                  { label: 'Layer 4', values: Array.from({length: 15}, (_, i) => 60 + Math.sin(i * 0.5) * 15) }
-                ]}
-              />
-            </div>
+            <PSNProgressChart />
+
+            <BudgetCard
+              metrics={[
+                { label: 'Total APBN 2025', value: 'Rp 3,613.1T' },
+                { label: 'Belanja Pemerintah Pusat', value: 'Rp 2,693.2T' },
+                { label: 'Transfer ke Daerah', value: 'Rp 919.9T' },
+              ]}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <CircularProgress
-                value={budgetData?.percentage || 0}
-                label="Budget Terserap"
+                value={83.7}
+                label="Progress PSN 2024"
               />
 
               <div className="md:col-span-3">
-                <BudgetCard
-                  metrics={[
-                    { label: 'ut enim ad minim veniam quis nostrud', value: '45.738' },
-                    { label: 'exercitation ullamco laboris nisi ut aliquip', value: '39.732' },
-                  ]}
-                />
+                <WeeklyLineChart />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <WeeklyBarChart
-                data={budgetData?.weekly || []}
-                title="Activity by Day"
-              />
-
-              <WeeklyLineChart />
             </div>
 
             <MetricsGrid

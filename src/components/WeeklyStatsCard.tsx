@@ -1,108 +1,142 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { Sparkline } from '@/components/Sparkline';
-
-interface StatItem {
-  value: string;
-  change: string;
-  trend: 'up' | 'down';
-  label: string;
-  sparklineData: number[];
-  color: string;
-}
+import { Heart, GraduationCap, Building2, Users } from 'lucide-react';
 
 export const WeeklyStatsCard = () => {
-  const stats: StatItem[] = [
+  const psnStats = [
     {
-      value: '957',
-      change: '+35%',
-      trend: 'up',
-      label: 'ut enim ad minim veniam',
-      sparklineData: [30, 32, 35, 38, 40, 42, 45],
-      color: '#8b5cf6'
+      icon: Heart,
+      value: '36.2 Juta',
+      change: '+43.6%',
+      trend: 'up' as const,
+      label: 'Penerima MBG',
+      target: '82.9 Juta target 2025',
+      color: '#10b981',
+      bgColor: 'from-emerald-500 to-emerald-600'
     },
     {
-      value: '225',
-      change: '-17%',
-      trend: 'down',
-      label: 'exercitation ullamco laboris',
-      sparklineData: [45, 43, 40, 38, 35, 32, 30],
-      color: '#8b5cf6'
+      icon: Users,
+      value: '12,205',
+      change: '+40.7%',
+      trend: 'up' as const,
+      label: 'Dapur Gizi (SPPG)',
+      target: '30,000 target 2025',
+      color: '#f59e0b',
+      bgColor: 'from-amber-500 to-amber-600'
     },
     {
-      value: '570',
-      change: '+48%',
-      trend: 'up',
-      label: 'labore nisi ut consequat',
-      sparklineData: [25, 28, 32, 35, 38, 42, 45],
-      color: '#ec4899'
+      icon: GraduationCap,
+      value: '848',
+      change: '+0.85%',
+      trend: 'up' as const,
+      label: 'Siswa Sekolah Rakyat',
+      target: '100,000 target',
+      color: '#3b82f6',
+      bgColor: 'from-blue-500 to-blue-600'
+    },
+    {
+      icon: Building2,
+      value: '195',
+      change: '+83.7%',
+      trend: 'up' as const,
+      label: 'PSN Selesai',
+      target: '233 total proyek',
+      color: '#8b5cf6',
+      bgColor: 'from-purple-500 to-purple-600'
     }
   ];
 
   return (
-    <Card className="bg-white border border-gray-200 shadow-sm">
+    <Card className="bg-white border-0 shadow-soft-lg rounded-2xl">
       <div className="p-6">
         <div className="mb-6">
-          <div className="text-3xl font-bold text-gray-900 mb-2">$ 55.656,25</div>
+          <h3 className="text-lg font-bold text-gray-900 mb-1">Realisasi Program 2025</h3>
+          <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Program Strategis Nasional
+          </div>
         </div>
 
-        <div className="grid grid-cols-5 gap-2 mb-6">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day, index) => {
-            const heights = [65, 75, 80, 85, 90];
-            const colors = ['#ec4899', '#8b5cf6'];
-
+        <div className="space-y-4">
+          {psnStats.map((stat, index) => {
+            const Icon = stat.icon;
             return (
-              <div key={day} className="text-center">
-                <div className="h-24 flex flex-col justify-end items-center gap-1 mb-2">
-                  {[0, 1].map((barIndex) => {
-                    const barHeight = `${heights[index] - barIndex * 15}%`;
-                    return (
-                      <motion.div
-                        key={barIndex}
-                        className="w-full rounded-t"
-                        style={{
-                          height: barHeight,
-                          backgroundColor: colors[barIndex],
-                        }}
-                        initial={{ scaleY: 0 }}
-                        animate={{ scaleY: 1 }}
-                        transition={{ delay: index * 0.1 + barIndex * 0.05, duration: 0.5 }}
-                      />
-                    );
-                  })}
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 shadow-soft border border-gray-100 hover:shadow-soft-lg transition-all duration-300"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.bgColor} flex items-center justify-center shadow-soft`}>
+                      <Icon className="w-7 h-7 text-white" />
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex items-baseline gap-3 mb-1">
+                        <span className="text-2xl font-bold text-gray-900">{stat.value}</span>
+                        <span className={`text-sm font-bold px-2 py-1 rounded-lg ${
+                          stat.trend === 'up'
+                            ? 'bg-emerald-100 text-emerald-600'
+                            : 'bg-red-100 text-red-600'
+                        }`}>
+                          {stat.change}
+                        </span>
+                      </div>
+                      <p className="text-sm font-semibold text-gray-700 mb-0.5">{stat.label}</p>
+                      <p className="text-xs text-gray-500">{stat.target}</p>
+                    </div>
+                  </div>
+
+                  <div className="ml-4">
+                    <div className="relative w-16 h-16">
+                      <svg className="w-full h-full transform -rotate-90">
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          fill="none"
+                          stroke="#f0f0f0"
+                          strokeWidth="4"
+                        />
+                        <motion.circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          fill="none"
+                          stroke={stat.color}
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          initial={{ strokeDasharray: "0 175" }}
+                          animate={{ strokeDasharray: `${parseFloat(stat.change) * 1.75} 175` }}
+                          transition={{ delay: 0.5 + index * 0.1, duration: 1 }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-xs font-bold text-gray-700">
+                          {parseInt(stat.change)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs text-gray-600 font-medium">{day}</div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        <div className="space-y-6">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              className="flex items-center justify-between"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 + index * 0.1 }}
-            >
-              <div className="flex-1">
-                <div className="flex items-baseline gap-3 mb-1">
-                  <span className="text-3xl font-bold text-gray-900">{stat.value}</span>
-                  <span className={`text-sm font-semibold ${
-                    stat.trend === 'up' ? 'text-emerald-500' : 'text-red-500'
-                  }`}>
-                    {stat.change}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-500">{stat.label}</p>
-              </div>
-
-              <div className="ml-4">
-                <Sparkline data={stat.sparklineData} color={stat.color} height={40} />
-              </div>
-            </motion.div>
-          ))}
+        <div className="mt-6 pt-4 border-t border-gray-100">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 text-center">
+              <div className="text-xl font-bold text-blue-600">Rp 71T</div>
+              <div className="text-xs text-gray-600 mt-1">Budget MBG 2025</div>
+            </div>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 text-center">
+              <div className="text-xl font-bold text-purple-600">290 Ribu</div>
+              <div className="text-xs text-gray-600 mt-1">Lapangan Kerja</div>
+            </div>
+          </div>
         </div>
       </div>
     </Card>
