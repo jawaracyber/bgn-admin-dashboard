@@ -178,7 +178,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
 
         if (isReadOnly) {
           return (
-            <div className={`w-[140px] md:w-[180px] px-3 py-2 rounded-md text-xs md:text-sm font-medium ${getStatusColor(status)}`}>
+            <div className={`w-[120px] sm:w-[140px] md:w-[180px] px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-[10px] sm:text-xs md:text-sm font-medium ${getStatusColor(status)}`}>
               {status}
             </div>
           );
@@ -189,23 +189,23 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
             value={status}
             onValueChange={(value) => handleStatusChange(row.original.id, value, onStatusUpdate)}
           >
-            <SelectTrigger className={`w-[140px] md:w-[180px] border rounded-md shadow-sm text-xs md:text-sm ${getStatusColor(status)}`}>
+            <SelectTrigger className={`w-[120px] sm:w-[140px] md:w-[180px] border rounded-md shadow-sm text-[10px] sm:text-xs md:text-sm ${getStatusColor(status)}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-md shadow-md border z-50">
-              <SelectItem value="PENDING UPDATE" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
+              <SelectItem value="PENDING UPDATE" className="cursor-pointer hover:bg-slate-100 text-[10px] sm:text-xs md:text-sm py-1.5">
                 PENDING UPDATE
               </SelectItem>
-              <SelectItem value="APPROVED" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
+              <SelectItem value="APPROVED" className="cursor-pointer hover:bg-slate-100 text-[10px] sm:text-xs md:text-sm py-1.5">
                 APPROVED
               </SelectItem>
-              <SelectItem value="APPROVED KUOTA" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
+              <SelectItem value="APPROVED KUOTA" className="cursor-pointer hover:bg-slate-100 text-[10px] sm:text-xs md:text-sm py-1.5">
                 APPROVED KUOTA
               </SelectItem>
-              <SelectItem value="ON HOLD" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
+              <SelectItem value="ON HOLD" className="cursor-pointer hover:bg-slate-100 text-[10px] sm:text-xs md:text-sm py-1.5">
                 ON HOLD
               </SelectItem>
-              <SelectItem value="REJECT" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
+              <SelectItem value="REJECT" className="cursor-pointer hover:bg-slate-100 text-[10px] sm:text-xs md:text-sm py-1.5">
                 REJECT
               </SelectItem>
             </SelectContent>
@@ -407,15 +407,15 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px]">
+        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+          <table className="w-full min-w-[800px] lg:min-w-full">
             <thead className="bg-gradient-to-r from-primary/10 to-accent/10 sticky top-0 z-10 backdrop-blur-sm">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-3 md:px-6 py-3 md:py-5 text-left text-[10px] md:text-xs font-bold text-foreground uppercase tracking-wider"
+                      className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 md:py-5 text-left text-[9px] sm:text-[10px] md:text-xs font-bold text-foreground uppercase tracking-wider whitespace-nowrap"
                     >
                       {header.isPlaceholder
                         ? null
@@ -431,7 +431,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={columns.length} className="px-4 sm:px-6 py-8 sm:py-12 text-center text-muted-foreground text-sm">
                     Tidak ada data yang ditemukan
                   </td>
                 </tr>
@@ -447,7 +447,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                     }`}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm">
+                      <td key={cell.id} className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 md:py-4 text-[10px] sm:text-xs md:text-sm">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
@@ -458,9 +458,9 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
           </table>
         </div>
 
-        <div className="px-4 md:px-6 py-4 md:py-5 border-t border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
+        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-5 border-t border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs md:text-sm text-muted-foreground text-center sm:text-left">
+            <div className="text-[10px] sm:text-xs md:text-sm text-muted-foreground text-center sm:text-left">
               Menampilkan {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{" "}
               {Math.min(
                 (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
@@ -468,26 +468,26 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
               )}{" "}
               dari {table.getFilteredRowModel().rows.length} data
             </div>
-            <div className="flex items-center gap-1 md:gap-2">
+            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
               >
-                <ChevronsLeft className="w-3 h-3 md:w-4 md:h-4" />
+                <ChevronsLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
               >
-                <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
+                <ChevronLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
               </Button>
-              <div className="text-xs md:text-sm font-medium text-foreground px-2">
+              <div className="text-[10px] sm:text-xs md:text-sm font-medium text-foreground px-1.5 sm:px-2 whitespace-nowrap">
                 Hal {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
               </div>
               <Button
@@ -495,18 +495,18 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                 size="sm"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
               >
-                <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
+                <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
               >
-                <ChevronsRight className="w-3 h-3 md:w-4 md:h-4" />
+                <ChevronsRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
               </Button>
             </div>
           </div>
