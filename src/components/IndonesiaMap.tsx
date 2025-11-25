@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+import { Loader2 } from 'lucide-react';
 
 interface ProvinceData {
   name: string;
@@ -45,82 +42,110 @@ const getColorForValue = (value: number): string => {
 
 export const IndonesiaMap = ({ selectedKPI, onProvinceClick }: IndonesiaMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const popup = useRef<mapboxgl.Popup | null>(null);
+  const map = useRef<any>(null);
+  const popup = useRef<any>(null);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
+  const [mapboxgl, setMapboxgl] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    let isMounted = true;
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [118.0, -2.5],
-      zoom: 4.2,
-      pitch: 0,
-      bearing: 0,
-    });
+    const initMap = async () => {
+      try {
+        setLoading(true);
+        const mapboxModule = await import('mapbox-gl');
+        await import('mapbox-gl/dist/mapbox-gl.css');
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        if (!isMounted) return;
 
-    map.current.on('load', () => {
-      if (!map.current) return;
+        const mapboxglInstance = mapboxModule.default;
+        mapboxglInstance.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+        setMapboxgl(mapboxglInstance);
 
-      map.current.addSource('indonesia-provinces', {
-        type: 'vector',
-        url: 'mapbox://mapbox.boundaries-adm1-v3',
-      });
+        if (!mapContainer.current || map.current) return;
 
-      map.current.addLayer({
-        id: 'province-fills',
-        type: 'fill',
-        source: 'indonesia-provinces',
-        'source-layer': 'boundaries_admin_1',
-        filter: ['==', 'iso_3166_1_alpha_3', 'IDN'],
-        paint: {
-          'fill-color': '#e5e7eb',
-          'fill-opacity': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            0.9,
-            0.7
-          ],
-        },
-      });
+        map.current = new mapboxglInstance.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/light-v11',
+          center: [118.0, -2.5],
+          zoom: 4.2,
+          pitch: 0,
+          bearing: 0,
+        });
 
-      map.current.addLayer({
-        id: 'province-borders',
-        type: 'line',
-        source: 'indonesia-provinces',
-        'source-layer': 'boundaries_admin_1',
-        filter: ['==', 'iso_3166_1_alpha_3', 'IDN'],
-        paint: {
-          'line-color': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            '#dc2626',
-            '#9ca3af'
-          ],
-          'line-width': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            3,
-            1
-          ],
-          'line-opacity': 1,
-        },
-      });
+        map.current.addControl(new mapboxglInstance.NavigationControl(), 'top-right');
 
-      updateMapColors();
-    });
+        map.current.on('load', () => {
+          if (!map.current) return;
 
-    popup.current = new mapboxgl.Popup({
-      closeButton: false,
-      closeOnClick: false,
-      className: 'map-popup',
-    });
+          map.current.addSource('indonesia-provinces', {
+            type: 'vector',
+            url: 'mapbox://mapbox.boundaries-adm1-v3',
+          });
+
+          map.current.addLayer({
+            id: 'province-fills',
+            type: 'fill',
+            source: 'indonesia-provinces',
+            'source-layer': 'boundaries_admin_1',
+            filter: ['==', 'iso_3166_1_alpha_3', 'IDN'],
+            paint: {
+              'fill-color': '#e5e7eb',
+              'fill-opacity': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                0.9,
+                0.7
+              ],
+            },
+          });
+
+          map.current.addLayer({
+            id: 'province-borders',
+            type: 'line',
+            source: 'indonesia-provinces',
+            'source-layer': 'boundaries_admin_1',
+            filter: ['==', 'iso_3166_1_alpha_3', 'IDN'],
+            paint: {
+              'line-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                '#dc2626',
+                '#9ca3af'
+              ],
+              'line-width': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                3,
+                1
+              ],
+              'line-opacity': 1,
+            },
+          });
+
+          updateMapColors();
+          setLoading(false);
+        });
+
+        popup.current = new mapboxglInstance.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          className: 'map-popup',
+        });
+
+      } catch (err) {
+        console.error('Error initializing map:', err);
+        setError('Failed to load map');
+        setLoading(false);
+      }
+    };
+
+    initMap();
 
     return () => {
+      isMounted = false;
       if (map.current) {
         map.current.remove();
         map.current = null;
@@ -149,9 +174,9 @@ export const IndonesiaMap = ({ selectedKPI, onProvinceClick }: IndonesiaMapProps
   }, [selectedKPI]);
 
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !mapboxgl) return;
 
-    const handleMouseMove = (e: mapboxgl.MapMouseEvent) => {
+    const handleMouseMove = (e: any) => {
       if (!map.current || !popup.current) return;
 
       const features = map.current.queryRenderedFeatures(e.point, {
@@ -219,7 +244,7 @@ export const IndonesiaMap = ({ selectedKPI, onProvinceClick }: IndonesiaMapProps
       }
     };
 
-    const handleClick = (e: mapboxgl.MapMouseEvent) => {
+    const handleClick = (e: any) => {
       if (!map.current) return;
 
       const features = map.current.queryRenderedFeatures(e.point, {
@@ -244,7 +269,23 @@ export const IndonesiaMap = ({ selectedKPI, onProvinceClick }: IndonesiaMapProps
         map.current.off('click', 'province-fills', handleClick);
       }
     };
-  }, [selectedKPI, hoveredProvince, onProvinceClick]);
+  }, [selectedKPI, hoveredProvince, onProvinceClick, mapboxgl]);
+
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Card className="glass rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+          <div className="p-4 md:p-6">
+            <p className="text-center text-muted-foreground">{error}</p>
+          </div>
+        </Card>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -260,8 +301,13 @@ export const IndonesiaMap = ({ selectedKPI, onProvinceClick }: IndonesiaMapProps
           </p>
         </div>
         <div className="relative">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-10">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          )}
           <div ref={mapContainer} className="w-full h-[400px] md:h-[500px] lg:h-[600px]" />
-          <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 text-xs">
+          <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 text-xs z-20">
             <h4 className="font-bold mb-2">Legend</h4>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
