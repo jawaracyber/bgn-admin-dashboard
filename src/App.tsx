@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const General = lazy(() => import("@/pages/GeneralClean"));
+const General = lazy(() => import("@/pages/General"));
 const SPPG = lazy(() => import("@/pages/SPPG"));
 const Reports = lazy(() => import("@/pages/Reports"));
 const Settings = lazy(() => import("@/pages/Settings"));
