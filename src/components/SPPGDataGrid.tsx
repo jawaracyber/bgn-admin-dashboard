@@ -49,6 +49,48 @@ interface SPPGDataGridProps {
   onStatusUpdate?: () => void;
 }
 
+const getStatusConfig = (status: string) => {
+  const upperStatus = status.toUpperCase();
+  switch (upperStatus) {
+    case "APPROVED":
+      return {
+        bg: "bg-gradient-to-r from-emerald-500 to-green-600",
+        text: "text-white",
+        icon: "✓",
+        label: "Disetujui"
+      };
+    case "APPROVED KUOTA":
+      return {
+        bg: "bg-gradient-to-r from-teal-500 to-cyan-600",
+        text: "text-white",
+        icon: "✓",
+        label: "Disetujui (Kuota)"
+      };
+    case "REJECT":
+      return {
+        bg: "bg-gradient-to-r from-rose-500 to-red-600",
+        text: "text-white",
+        icon: "✕",
+        label: "Ditolak"
+      };
+    case "ON HOLD":
+      return {
+        bg: "bg-gradient-to-r from-amber-500 to-orange-600",
+        text: "text-white",
+        icon: "⏸",
+        label: "Ditahan"
+      };
+    case "PENDING UPDATE":
+    default:
+      return {
+        bg: "bg-gradient-to-r from-slate-400 to-slate-500",
+        text: "text-white",
+        icon: "⋯",
+        label: "Menunggu Update"
+      };
+  }
+};
+
 const getStatusColor = (status: string) => {
   const upperStatus = status.toUpperCase();
   switch (upperStatus) {
@@ -449,16 +491,19 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="PENDING UPDATE">PENDING UPDATE</SelectItem>
-                          <SelectItem value="APPROVED">APPROVED</SelectItem>
-                          <SelectItem value="APPROVED KUOTA">APPROVED KUOTA</SelectItem>
-                          <SelectItem value="ON HOLD">ON HOLD</SelectItem>
-                          <SelectItem value="REJECT">REJECT</SelectItem>
+                          <SelectItem value="PENDING UPDATE">Menunggu Update</SelectItem>
+                          <SelectItem value="APPROVED">Disetujui</SelectItem>
+                          <SelectItem value="APPROVED KUOTA">Disetujui (Kuota)</SelectItem>
+                          <SelectItem value="ON HOLD">Ditahan</SelectItem>
+                          <SelectItem value="REJECT">Ditolak</SelectItem>
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div className={`inline-flex px-3 py-2 rounded-lg text-xs md:text-sm font-semibold ${getStatusColor(selectedRow.prog_stat)}`}>
-                        {selectedRow.prog_stat}
+                      <div className="inline-flex items-center gap-2">
+                        <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold shadow-md ${getStatusConfig(selectedRow.prog_stat).bg} ${getStatusConfig(selectedRow.prog_stat).text}`}>
+                          <span className="text-base">{getStatusConfig(selectedRow.prog_stat).icon}</span>
+                          <span>{getStatusConfig(selectedRow.prog_stat).label}</span>
+                        </div>
                       </div>
                     )}
                   </div>
