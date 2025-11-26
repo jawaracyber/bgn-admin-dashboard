@@ -35,6 +35,7 @@ import { supabase } from "@/lib/supabase";
 
 export interface SPPGRow {
   id: string;
+  nama_sppg: string;
   prog_stat: string;
   kota_kabupaten: string;
   kecamatan: string;
@@ -98,6 +99,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       const { error } = await supabase
         .from('sppg')
         .update({
+          nama_sppg: editedData.nama_sppg,
           prog_stat: editedData.prog_stat,
           kota_kabupaten: editedData.kota_kabupaten,
           kecamatan: editedData.kecamatan,
@@ -125,7 +127,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
 
   const columns: ColumnDef<SPPGRow>[] = [
     {
-      accessorKey: "id",
+      accessorKey: "nama_sppg",
       header: ({ column }) => {
         return (
           <div
@@ -145,7 +147,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => (
         <div className="font-medium text-foreground text-[10px] sm:text-xs md:text-sm truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">
-          {row.getValue("id")}
+          {row.getValue("nama_sppg")}
         </div>
       ),
     },
@@ -422,13 +424,12 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                   <Label className="text-xs md:text-sm font-semibold">Nama SPPG</Label>
                   {editMode && isSuperUser ? (
                     <Input
-                      value={editedData?.id || ""}
-                      onChange={(e) => setEditedData({ ...editedData!, id: e.target.value })}
+                      value={editedData?.nama_sppg || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, nama_sppg: e.target.value })}
                       className="text-xs md:text-sm"
-                      disabled
                     />
                   ) : (
-                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.id}</p>
+                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.nama_sppg}</p>
                   )}
                 </div>
 

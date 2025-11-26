@@ -19,6 +19,7 @@ const fetchSPPGData = async (): Promise<SPPGRow[]> => {
 
   return (data || []).map((item: SPPGData) => ({
     id: item.id,
+    nama_sppg: item.nama_sppg,
     prog_stat: item.prog_stat || "PENDING UPDATE",
     kota_kabupaten: item.kota_kabupaten,
     kecamatan: item.kecamatan || "-",
