@@ -15,11 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown, Eye, MoreVertical, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -30,13 +29,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 export interface SPPGRow {
   id: string;
@@ -68,68 +63,65 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const handleStatusChange = async (id: string, newStatus: string, onStatusUpdate?: () => void) => {
-  try {
-    const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-sppg-status`;
-    const response = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id_sppg: id,
-        prog_stat: newStatus,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Gagal memperbarui status');
-    }
-
-    toast.success('Status berhasil diperbarui');
-    if (onStatusUpdate) {
-      onStatusUpdate();
-    }
-  } catch (error) {
-    toast.error('Gagal memperbarui status');
-    console.error(error);
-  }
-};
-
-const handleSetReffAttention = async (id: string, onStatusUpdate?: () => void) => {
-  try {
-    const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-sppg-status`;
-    const response = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id_sppg: id,
-        reff_attention: 'PR07',
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Gagal memperbarui reff attention');
-    }
-
-    toast.success('Reff Attention berhasil diubah ke PR07');
-    window.location.reload();
-  } catch (error) {
-    toast.error('Gagal memperbarui reff attention');
-    console.error(error);
-  }
-};
-
 export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
-  const { isReadOnly } = useAuth();
+  const { isSuperUser } = useAuth();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<SPPGRow | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedData, setEditedData] = useState<SPPGRow | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleRowClick = (row: SPPGRow) => {
+    setSelectedRow(row);
+    setEditedData(row);
+    setEditMode(false);
+    setDetailDialogOpen(true);
+  };
+
+  const handleEdit = () => {
+    setEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditedData(selectedRow);
+    setEditMode(false);
+  };
+
+  const handleSave = async () => {
+    if (!editedData || !selectedRow) return;
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('sppg')
+        .update({
+          prog_stat: editedData.prog_stat,
+          kota_kabupaten: editedData.kota_kabupaten,
+          kecamatan: editedData.kecamatan,
+          provinsi: editedData.provinsi,
+          alamat: editedData.alamat,
+          reff_attention: editedData.reff_attention,
+        })
+        .eq('id', selectedRow.id);
+
+      if (error) throw error;
+
+      toast.success('Data berhasil diperbarui');
+      setEditMode(false);
+      setDetailDialogOpen(false);
+      if (onStatusUpdate) {
+        onStatusUpdate();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Gagal memperbarui data');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const columns: ColumnDef<SPPGRow>[] = [
     {
@@ -137,22 +129,24 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       header: ({ column }) => {
         return (
           <div
-            className="flex items-center gap-2 cursor-pointer select-none"
+            className="flex items-center gap-1 cursor-pointer select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            ID SPPG
+            <span className="text-[10px] sm:text-xs md:text-sm">NAMA SPPG</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
+              <ArrowDown className="w-3 h-3 md:w-4 md:h-4" />
             ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <ArrowUpDown className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
             )}
           </div>
         );
       },
       cell: ({ row }) => (
-        <div className="font-medium text-foreground">{row.getValue("id")}</div>
+        <div className="font-medium text-foreground text-[10px] sm:text-xs md:text-sm truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">
+          {row.getValue("id")}
+        </div>
       ),
     },
     {
@@ -160,57 +154,26 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       header: ({ column }) => {
         return (
           <div
-            className="flex items-center gap-2 cursor-pointer select-none"
+            className="flex items-center gap-1 cursor-pointer select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Status Pengajuan
+            <span className="text-[10px] sm:text-xs md:text-sm">STATUS PENGAJUAN</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
+              <ArrowDown className="w-3 h-3 md:w-4 md:h-4" />
             ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <ArrowUpDown className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
             )}
           </div>
         );
       },
       cell: ({ row }) => {
         const status = (row.getValue("prog_stat") as string) || "PENDING UPDATE";
-
-        if (isReadOnly) {
-          return (
-            <div className={`w-[140px] md:w-[180px] px-3 py-2 rounded-md text-xs md:text-sm font-medium ${getStatusColor(status)}`}>
-              {status}
-            </div>
-          );
-        }
-
         return (
-          <Select
-            value={status}
-            onValueChange={(value) => handleStatusChange(row.original.id, value, onStatusUpdate)}
-          >
-            <SelectTrigger className={`w-[140px] md:w-[180px] border rounded-md shadow-sm text-xs md:text-sm ${getStatusColor(status)}`}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-white rounded-md shadow-md border z-50">
-              <SelectItem value="PENDING UPDATE" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
-                PENDING UPDATE
-              </SelectItem>
-              <SelectItem value="APPROVED" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
-                APPROVED
-              </SelectItem>
-              <SelectItem value="APPROVED KUOTA" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
-                APPROVED KUOTA
-              </SelectItem>
-              <SelectItem value="ON HOLD" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
-                ON HOLD
-              </SelectItem>
-              <SelectItem value="REJECT" className="cursor-pointer hover:bg-slate-100 text-xs md:text-sm py-1.5">
-                REJECT
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <div className={`px-2 py-1 rounded-md text-[9px] sm:text-[10px] md:text-xs font-medium ${getStatusColor(status)} inline-block`}>
+            {status}
+          </div>
         );
       },
     },
@@ -219,22 +182,24 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       header: ({ column }) => {
         return (
           <div
-            className="flex items-center gap-2 cursor-pointer select-none"
+            className="flex items-center gap-1 cursor-pointer select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Kota/Kabupaten
+            <span className="text-[10px] sm:text-xs md:text-sm">KOTA/KABUPATEN</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
+              <ArrowDown className="w-3 h-3 md:w-4 md:h-4" />
             ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <ArrowUpDown className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
             )}
           </div>
         );
       },
       cell: ({ row }) => (
-        <div className="text-muted-foreground">{row.getValue("kota_kabupaten")}</div>
+        <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm truncate max-w-[100px] sm:max-w-[150px] md:max-w-none">
+          {row.getValue("kota_kabupaten")}
+        </div>
       ),
     },
     {
@@ -242,68 +207,24 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       header: ({ column }) => {
         return (
           <div
-            className="flex items-center gap-2 cursor-pointer select-none"
+            className="flex items-center gap-1 cursor-pointer select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Kecamatan
+            <span className="text-[10px] sm:text-xs md:text-sm">KECAMATAN</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
+              <ArrowDown className="w-3 h-3 md:w-4 md:h-4" />
             ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <ArrowUpDown className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
             )}
           </div>
         );
       },
       cell: ({ row }) => (
-        <div className="text-muted-foreground">{row.getValue("kecamatan") || "-"}</div>
-      ),
-    },
-    {
-      accessorKey: "provinsi",
-      header: ({ column }) => {
-        return (
-          <div
-            className="flex items-center gap-2 cursor-pointer select-none"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Provinsi
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
-            ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-            )}
-          </div>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="text-muted-foreground">{row.getValue("provinsi")}</div>
-      ),
-    },
-    {
-      accessorKey: "alamat",
-      header: ({ column }) => {
-        return (
-          <div
-            className="flex items-center gap-2 cursor-pointer select-none"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Alamat
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
-            ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-            )}
-          </div>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="text-muted-foreground max-w-xs truncate">{row.getValue("alamat") || "-"}</div>
+        <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">
+          {row.getValue("kecamatan") || "-"}
+        </div>
       ),
     },
     {
@@ -311,51 +232,24 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       header: ({ column }) => {
         return (
           <div
-            className="flex items-center gap-2 cursor-pointer select-none"
+            className="flex items-center gap-1 cursor-pointer select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Refferal Strategic
+            <span className="text-[10px] sm:text-xs md:text-sm">VERIFIKATOR</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="w-4 h-4" />
+              <ArrowDown className="w-3 h-3 md:w-4 md:h-4" />
             ) : (
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <ArrowUpDown className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
             )}
           </div>
         );
       },
       cell: ({ row }) => (
-        <div className="text-muted-foreground">{row.getValue("reff_attention") || "-"}</div>
-      ),
-    },
-    {
-      id: "actions",
-      header: "Aksi",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hover:bg-primary/10"
-            >
-              <MoreVertical className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => setDetailDialogOpen(true)}>
-              <Eye className="w-4 h-4 mr-2" />
-              Lihat Detail
-            </DropdownMenuItem>
-            {!isReadOnly && (
-              <DropdownMenuItem onClick={() => handleSetReffAttention(row.original.id, onStatusUpdate)}>
-                <Star className="w-4 h-4 mr-2" />
-                Set Reff PR07
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm">
+          {row.getValue("reff_attention") || "-"}
+        </div>
       ),
     },
   ];
@@ -390,142 +284,265 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
     >
       <Card className="glass rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
         <CardContent className="p-0">
-        <div className="p-4 md:p-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5 text-primary" />
-              <Input
-                type="text"
-                placeholder="Cari data SPPG..."
-                value={globalFilter ?? ""}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                className="pl-10 md:pl-12 h-10 md:h-12 rounded-xl border-2 focus:border-primary smooth-transition text-sm md:text-base"
-              />
-            </div>
-            <div className="text-xs md:text-sm text-muted-foreground text-center sm:text-left whitespace-nowrap">
-              {table.getFilteredRowModel().rows.length} data ditemukan
-            </div>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px]">
-            <thead className="bg-gradient-to-r from-primary/10 to-accent/10 sticky top-0 z-10 backdrop-blur-sm">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="px-3 md:px-6 py-3 md:py-5 text-left text-[10px] md:text-xs font-bold text-foreground uppercase tracking-wider"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.length === 0 ? (
-                <tr>
-                  <td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">
-                    Tidak ada data yang ditemukan
-                  </td>
-                </tr>
-              ) : (
-                table.getRowModel().rows.map((row, index) => (
-                  <motion.tr
-                    key={row.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: index * 0.02 }}
-                    className={`border-t border-border/50 hover:bg-primary/5 smooth-transition ${
-                      index % 2 === 1 ? "bg-slate-50/30" : ""
-                    }`}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </motion.tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="px-4 md:px-6 py-4 md:py-5 border-t border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs md:text-sm text-muted-foreground text-center sm:text-left">
-              Menampilkan {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{" "}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-                table.getFilteredRowModel().rows.length
-              )}{" "}
-              dari {table.getFilteredRowModel().rows.length} data
-            </div>
-            <div className="flex items-center gap-1 md:gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-                className="h-8 w-8 p-0"
-              >
-                <ChevronsLeft className="w-3 h-3 md:w-4 md:h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="h-8 w-8 p-0"
-              >
-                <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
-              </Button>
-              <div className="text-xs md:text-sm font-medium text-foreground px-2">
-                Hal {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
+          <div className="p-3 md:p-4 lg:p-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5 text-primary" />
+                <Input
+                  type="text"
+                  placeholder="Cari data SPPG..."
+                  value={globalFilter ?? ""}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                  className="pl-10 md:pl-12 h-9 md:h-10 lg:h-12 rounded-xl border-2 focus:border-primary smooth-transition text-xs md:text-sm lg:text-base"
+                />
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="h-8 w-8 p-0"
-              >
-                <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-                className="h-8 w-8 p-0"
-              >
-                <ChevronsRight className="w-3 h-3 md:w-4 md:h-4" />
-              </Button>
+              <div className="text-xs md:text-sm text-muted-foreground text-center sm:text-left whitespace-nowrap">
+                {table.getFilteredRowModel().rows.length} data
+              </div>
             </div>
           </div>
-        </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-primary/10 to-accent/10 sticky top-0 z-10 backdrop-blur-sm">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 md:py-4 text-left text-[10px] sm:text-xs md:text-sm font-bold text-foreground uppercase tracking-tight md:tracking-wider"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.length === 0 ? (
+                  <tr>
+                    <td colSpan={columns.length} className="px-4 py-8 md:py-12 text-center text-xs md:text-sm text-muted-foreground">
+                      Tidak ada data yang ditemukan
+                    </td>
+                  </tr>
+                ) : (
+                  table.getRowModel().rows.map((row, index) => (
+                    <motion.tr
+                      key={row.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: index * 0.02 }}
+                      className={`border-t border-border/50 hover:bg-primary/5 smooth-transition cursor-pointer ${
+                        index % 2 === 1 ? "bg-slate-50/30" : ""
+                      }`}
+                      onClick={() => handleRowClick(row.original)}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td key={cell.id} className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 md:py-4 text-[10px] sm:text-xs md:text-sm">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </motion.tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="px-3 md:px-4 lg:px-6 py-3 md:py-4 lg:py-5 border-t border-border/50 bg-gradient-to-r from-primary/5 to-accent/5">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-[10px] sm:text-xs md:text-sm text-muted-foreground text-center sm:text-left">
+                {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{" "}
+                {Math.min(
+                  (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+                  table.getFilteredRowModel().rows.length
+                )}{" "}
+                dari {table.getFilteredRowModel().rows.length}
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
+                  className="h-7 w-7 md:h-8 md:w-8 p-0"
+                >
+                  <ChevronsLeft className="w-3 h-3 md:w-4 md:h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className="h-7 w-7 md:h-8 md:w-8 p-0"
+                >
+                  <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
+                </Button>
+                <div className="text-[10px] sm:text-xs md:text-sm font-medium text-foreground px-2">
+                  {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className="h-7 w-7 md:h-8 md:w-8 p-0"
+                >
+                  <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                  className="h-7 w-7 md:h-8 md:w-8 p-0"
+                >
+                  <ChevronsRight className="w-3 h-3 md:w-4 md:h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Detail Pengajuan</DialogTitle>
-            <DialogDescription className="pt-4 text-center">
-              <div className="space-y-2">
-                <p className="text-lg font-semibold text-foreground">Under Development</p>
-                <p className="text-muted-foreground">Will Deploy Soon</p>
-              </div>
-            </DialogDescription>
+            <DialogTitle className="text-lg md:text-xl">Detail Data SPPG</DialogTitle>
           </DialogHeader>
+          {selectedRow && (
+            <div className="space-y-4 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-xs md:text-sm font-semibold">Nama SPPG</Label>
+                  {editMode && isSuperUser ? (
+                    <Input
+                      value={editedData?.id || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, id: e.target.value })}
+                      className="text-xs md:text-sm"
+                      disabled
+                    />
+                  ) : (
+                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.id}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs md:text-sm font-semibold">Status Pengajuan</Label>
+                  {editMode && isSuperUser ? (
+                    <Select
+                      value={editedData?.prog_stat || ""}
+                      onValueChange={(value) => setEditedData({ ...editedData!, prog_stat: value })}
+                    >
+                      <SelectTrigger className="text-xs md:text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PENDING UPDATE">PENDING UPDATE</SelectItem>
+                        <SelectItem value="APPROVED">APPROVED</SelectItem>
+                        <SelectItem value="APPROVED KUOTA">APPROVED KUOTA</SelectItem>
+                        <SelectItem value="ON HOLD">ON HOLD</SelectItem>
+                        <SelectItem value="REJECT">REJECT</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div className={`inline-block px-3 py-1.5 rounded-md text-xs md:text-sm font-medium ${getStatusColor(selectedRow.prog_stat)}`}>
+                      {selectedRow.prog_stat}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs md:text-sm font-semibold">Provinsi</Label>
+                  {editMode && isSuperUser ? (
+                    <Input
+                      value={editedData?.provinsi || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, provinsi: e.target.value })}
+                      className="text-xs md:text-sm"
+                    />
+                  ) : (
+                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.provinsi}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs md:text-sm font-semibold">Kota/Kabupaten</Label>
+                  {editMode && isSuperUser ? (
+                    <Input
+                      value={editedData?.kota_kabupaten || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, kota_kabupaten: e.target.value })}
+                      className="text-xs md:text-sm"
+                    />
+                  ) : (
+                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.kota_kabupaten}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs md:text-sm font-semibold">Kecamatan</Label>
+                  {editMode && isSuperUser ? (
+                    <Input
+                      value={editedData?.kecamatan || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, kecamatan: e.target.value })}
+                      className="text-xs md:text-sm"
+                    />
+                  ) : (
+                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.kecamatan || "-"}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs md:text-sm font-semibold">Verifikator</Label>
+                  {editMode && isSuperUser ? (
+                    <Input
+                      value={editedData?.reff_attention || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, reff_attention: e.target.value })}
+                      className="text-xs md:text-sm"
+                    />
+                  ) : (
+                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.reff_attention || "-"}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs md:text-sm font-semibold">Alamat</Label>
+                {editMode && isSuperUser ? (
+                  <Input
+                    value={editedData?.alamat || ""}
+                    onChange={(e) => setEditedData({ ...editedData!, alamat: e.target.value })}
+                    className="text-xs md:text-sm"
+                  />
+                ) : (
+                  <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.alamat || "-"}</p>
+                )}
+              </div>
+
+              {isSuperUser && (
+                <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                  {!editMode ? (
+                    <Button onClick={handleEdit} className="w-full sm:w-auto text-xs md:text-sm">
+                      Edit Data
+                    </Button>
+                  ) : (
+                    <>
+                      <Button onClick={handleSave} disabled={saving} className="w-full sm:flex-1 text-xs md:text-sm">
+                        {saving ? "Menyimpan..." : "Simpan"}
+                      </Button>
+                      <Button onClick={handleCancelEdit} variant="outline" className="w-full sm:flex-1 text-xs md:text-sm">
+                        Batal
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </motion.div>
