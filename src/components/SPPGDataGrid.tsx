@@ -413,129 +413,140 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       </Card>
 
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="sm:max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-lg md:text-xl">Detail Data SPPG</DialogTitle>
+        <DialogContent className="sm:max-w-[90vw] md:max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="space-y-3 pb-4 border-b">
+            <div className="space-y-1">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium">ID SPPG</p>
+              <DialogTitle className="text-xl md:text-2xl font-bold text-primary">#{selectedRow?.id}</DialogTitle>
+            </div>
           </DialogHeader>
           {selectedRow && (
-            <div className="space-y-4 pt-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-xs md:text-sm font-semibold">Nama SPPG</Label>
-                  {editMode && isSuperUser ? (
-                    <Input
-                      value={editedData?.nama_sppg || ""}
-                      onChange={(e) => setEditedData({ ...editedData!, nama_sppg: e.target.value })}
-                      className="text-xs md:text-sm"
-                    />
-                  ) : (
-                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.nama_sppg}</p>
-                  )}
-                </div>
+            <div className="space-y-6 pt-4">
+              <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg p-4 md:p-6 space-y-4">
+                <h3 className="text-sm md:text-base font-semibold text-foreground mb-4">Informasi Umum</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Nama SPPG</Label>
+                    {editMode && isSuperUser ? (
+                      <Input
+                        value={editedData?.nama_sppg || ""}
+                        onChange={(e) => setEditedData({ ...editedData!, nama_sppg: e.target.value })}
+                        className="text-xs md:text-sm"
+                      />
+                    ) : (
+                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.nama_sppg}</p>
+                    )}
+                  </div>
 
-                <div className="space-y-2">
-                  <Label className="text-xs md:text-sm font-semibold">Status Pengajuan</Label>
-                  {editMode && isSuperUser ? (
-                    <Select
-                      value={editedData?.prog_stat || ""}
-                      onValueChange={(value) => setEditedData({ ...editedData!, prog_stat: value })}
-                    >
-                      <SelectTrigger className="text-xs md:text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="PENDING UPDATE">PENDING UPDATE</SelectItem>
-                        <SelectItem value="APPROVED">APPROVED</SelectItem>
-                        <SelectItem value="APPROVED KUOTA">APPROVED KUOTA</SelectItem>
-                        <SelectItem value="ON HOLD">ON HOLD</SelectItem>
-                        <SelectItem value="REJECT">REJECT</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className={`inline-block px-3 py-1.5 rounded-md text-xs md:text-sm font-medium ${getStatusColor(selectedRow.prog_stat)}`}>
-                      {selectedRow.prog_stat}
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs md:text-sm font-semibold">Provinsi</Label>
-                  {editMode && isSuperUser ? (
-                    <Input
-                      value={editedData?.provinsi || ""}
-                      onChange={(e) => setEditedData({ ...editedData!, provinsi: e.target.value })}
-                      className="text-xs md:text-sm"
-                    />
-                  ) : (
-                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.provinsi}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs md:text-sm font-semibold">Kota/Kabupaten</Label>
-                  {editMode && isSuperUser ? (
-                    <Input
-                      value={editedData?.kota_kabupaten || ""}
-                      onChange={(e) => setEditedData({ ...editedData!, kota_kabupaten: e.target.value })}
-                      className="text-xs md:text-sm"
-                    />
-                  ) : (
-                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.kota_kabupaten}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs md:text-sm font-semibold">Kecamatan</Label>
-                  {editMode && isSuperUser ? (
-                    <Input
-                      value={editedData?.kecamatan || ""}
-                      onChange={(e) => setEditedData({ ...editedData!, kecamatan: e.target.value })}
-                      className="text-xs md:text-sm"
-                    />
-                  ) : (
-                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.kecamatan || "-"}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs md:text-sm font-semibold">Verifikator</Label>
-                  {editMode && isSuperUser ? (
-                    <Input
-                      value={editedData?.reff_attention || ""}
-                      onChange={(e) => setEditedData({ ...editedData!, reff_attention: e.target.value })}
-                      className="text-xs md:text-sm"
-                    />
-                  ) : (
-                    <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.reff_attention || "-"}</p>
-                  )}
+                  <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Status Pengajuan</Label>
+                    {editMode && isSuperUser ? (
+                      <Select
+                        value={editedData?.prog_stat || ""}
+                        onValueChange={(value) => setEditedData({ ...editedData!, prog_stat: value })}
+                      >
+                        <SelectTrigger className="text-xs md:text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="PENDING UPDATE">PENDING UPDATE</SelectItem>
+                          <SelectItem value="APPROVED">APPROVED</SelectItem>
+                          <SelectItem value="APPROVED KUOTA">APPROVED KUOTA</SelectItem>
+                          <SelectItem value="ON HOLD">ON HOLD</SelectItem>
+                          <SelectItem value="REJECT">REJECT</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className={`inline-flex px-3 py-2 rounded-lg text-xs md:text-sm font-semibold ${getStatusColor(selectedRow.prog_stat)}`}>
+                        {selectedRow.prog_stat}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs md:text-sm font-semibold">Alamat</Label>
-                {editMode && isSuperUser ? (
-                  <Input
-                    value={editedData?.alamat || ""}
-                    onChange={(e) => setEditedData({ ...editedData!, alamat: e.target.value })}
-                    className="text-xs md:text-sm"
-                  />
-                ) : (
-                  <p className="text-xs md:text-sm text-muted-foreground">{selectedRow.alamat || "-"}</p>
-                )}
+              <div className="bg-gradient-to-r from-secondary/5 to-accent/5 rounded-lg p-4 md:p-6 space-y-4">
+                <h3 className="text-sm md:text-base font-semibold text-foreground mb-4">Lokasi</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Provinsi</Label>
+                    {editMode && isSuperUser ? (
+                      <Input
+                        value={editedData?.provinsi || ""}
+                        onChange={(e) => setEditedData({ ...editedData!, provinsi: e.target.value })}
+                        className="text-xs md:text-sm"
+                      />
+                    ) : (
+                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.provinsi}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Kota/Kabupaten</Label>
+                    {editMode && isSuperUser ? (
+                      <Input
+                        value={editedData?.kota_kabupaten || ""}
+                        onChange={(e) => setEditedData({ ...editedData!, kota_kabupaten: e.target.value })}
+                        className="text-xs md:text-sm"
+                      />
+                    ) : (
+                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.kota_kabupaten}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Kecamatan</Label>
+                    {editMode && isSuperUser ? (
+                      <Input
+                        value={editedData?.kecamatan || ""}
+                        onChange={(e) => setEditedData({ ...editedData!, kecamatan: e.target.value })}
+                        className="text-xs md:text-sm"
+                      />
+                    ) : (
+                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.kecamatan || "-"}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Verifikator</Label>
+                    {editMode && isSuperUser ? (
+                      <Input
+                        value={editedData?.reff_attention || ""}
+                        onChange={(e) => setEditedData({ ...editedData!, reff_attention: e.target.value })}
+                        className="text-xs md:text-sm"
+                      />
+                    ) : (
+                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.reff_attention || "-"}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <Label className="text-xs md:text-sm font-semibold text-foreground">Alamat Lengkap</Label>
+                  {editMode && isSuperUser ? (
+                    <Input
+                      value={editedData?.alamat || ""}
+                      onChange={(e) => setEditedData({ ...editedData!, alamat: e.target.value })}
+                      className="text-xs md:text-sm"
+                    />
+                  ) : (
+                    <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.alamat || "-"}</p>
+                  )}
+                </div>
               </div>
 
               {isSuperUser && (
-                <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                   {!editMode ? (
-                    <Button onClick={handleEdit} className="w-full sm:w-auto text-xs md:text-sm">
+                    <Button onClick={handleEdit} className="w-full sm:w-auto text-sm md:text-base px-6 py-2">
                       Edit Data
                     </Button>
                   ) : (
                     <>
-                      <Button onClick={handleSave} disabled={saving} className="w-full sm:flex-1 text-xs md:text-sm">
-                        {saving ? "Menyimpan..." : "Simpan"}
+                      <Button onClick={handleSave} disabled={saving} className="w-full sm:flex-1 text-sm md:text-base px-6 py-2">
+                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
                       </Button>
-                      <Button onClick={handleCancelEdit} variant="outline" className="w-full sm:flex-1 text-xs md:text-sm">
+                      <Button onClick={handleCancelEdit} variant="outline" className="w-full sm:flex-1 text-sm md:text-base px-6 py-2">
                         Batal
                       </Button>
                     </>
