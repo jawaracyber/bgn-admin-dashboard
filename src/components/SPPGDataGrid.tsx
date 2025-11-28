@@ -237,7 +237,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
         if (isSuperUser) {
           return (
             <Select value={status} onValueChange={handleStatusChange}>
-              <SelectTrigger className="text-[9px] sm:text-[10px] md:text-xs h-7 w-full max-w-[120px] sm:max-w-[140px] md:max-w-none">
+              <SelectTrigger className={`text-[9px] sm:text-[10px] md:text-xs h-7 w-full max-w-[120px] sm:max-w-[140px] md:max-w-none font-medium ${getStatusColor(status)} border-0 px-2 py-1 rounded-md`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
