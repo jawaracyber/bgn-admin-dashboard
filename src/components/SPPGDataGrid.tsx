@@ -480,7 +480,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Label className="text-xs md:text-sm font-semibold text-foreground">Status Pengajuan</Label>
                     {editMode && isSuperUser ? (
                       <Select
@@ -499,11 +499,9 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div className="inline-flex items-center gap-2">
-                        <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold shadow-md ${getStatusConfig(selectedRow.prog_stat).bg} ${getStatusConfig(selectedRow.prog_stat).text}`}>
-                          <span className="text-base">{getStatusConfig(selectedRow.prog_stat).icon}</span>
-                          <span>{getStatusConfig(selectedRow.prog_stat).label}</span>
-                        </div>
+                      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm ${getStatusConfig(selectedRow.prog_stat).bg} ${getStatusConfig(selectedRow.prog_stat).text}`}>
+                        <span className="text-sm">{getStatusConfig(selectedRow.prog_stat).icon}</span>
+                        <span>{getStatusConfig(selectedRow.prog_stat).label}</span>
                       </div>
                     )}
                   </div>
