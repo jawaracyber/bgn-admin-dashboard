@@ -214,6 +214,44 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => {
         const status = (row.getValue("prog_stat") as string) || "PENDING UPDATE";
+        const isSuperUser = userRole === "super_user";
+
+        const handleStatusChange = async (newStatus: string) => {
+          try {
+            const { error } = await supabase
+              .from("sppg")
+              .update({ prog_stat: newStatus })
+              .eq("id", row.original.id);
+
+            if (error) throw error;
+
+            toast.success("Status berhasil diupdate");
+            if (onStatusUpdate) {
+              onStatusUpdate();
+            }
+          } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("Gagal mengupdate status");
+          }
+        };
+
+        if (isSuperUser) {
+          return (
+            <Select value={status} onValueChange={handleStatusChange}>
+              <SelectTrigger className="text-[9px] sm:text-[10px] md:text-xs h-7 w-full max-w-[120px] sm:max-w-[140px] md:max-w-none">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PENDING UPDATE">Menunggu Update</SelectItem>
+                <SelectItem value="APPROVED">Disetujui</SelectItem>
+                <SelectItem value="APPROVED KUOTA">Disetujui (Kuota)</SelectItem>
+                <SelectItem value="ON HOLD">Ditahan</SelectItem>
+                <SelectItem value="REJECT">Ditolak</SelectItem>
+              </SelectContent>
+            </Select>
+          );
+        }
+
         return (
           <div className={`px-2 py-1 rounded-md text-[9px] sm:text-[10px] md:text-xs font-medium ${getStatusColor(status)} inline-block`}>
             {status}
