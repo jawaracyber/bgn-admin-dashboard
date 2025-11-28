@@ -241,11 +241,11 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="PENDING UPDATE">Menunggu Update</SelectItem>
-                <SelectItem value="APPROVED">Disetujui</SelectItem>
-                <SelectItem value="APPROVED KUOTA">Disetujui (Kuota)</SelectItem>
-                <SelectItem value="ON HOLD">Ditahan</SelectItem>
-                <SelectItem value="REJECT">Ditolak</SelectItem>
+                <SelectItem value="PENDING UPDATE">PENDING UPDATE</SelectItem>
+                <SelectItem value="APPROVED">APPROVED</SelectItem>
+                <SelectItem value="APPROVED KUOTA">APPROVED KUOTA</SelectItem>
+                <SelectItem value="ON HOLD">ON HOLD</SelectItem>
+                <SelectItem value="REJECT">REJECT</SelectItem>
               </SelectContent>
             </Select>
           );
