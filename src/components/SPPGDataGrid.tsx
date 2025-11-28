@@ -480,24 +480,26 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                     )}
                   </div>
 
-                  <div className="space-y-3">
-                    <Label className="text-xs md:text-sm font-semibold text-foreground">Status Pengajuan</Label>
+                  <div>
                     {editMode && isSuperUser ? (
-                      <Select
-                        value={editedData?.prog_stat || ""}
-                        onValueChange={(value) => setEditedData({ ...editedData!, prog_stat: value })}
-                      >
-                        <SelectTrigger className="text-xs md:text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="PENDING UPDATE">Menunggu Update</SelectItem>
-                          <SelectItem value="APPROVED">Disetujui</SelectItem>
-                          <SelectItem value="APPROVED KUOTA">Disetujui (Kuota)</SelectItem>
-                          <SelectItem value="ON HOLD">Ditahan</SelectItem>
-                          <SelectItem value="REJECT">Ditolak</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="space-y-3">
+                        <Label className="text-xs md:text-sm font-semibold text-foreground">Status Pengajuan</Label>
+                        <Select
+                          value={editedData?.prog_stat || ""}
+                          onValueChange={(value) => setEditedData({ ...editedData!, prog_stat: value })}
+                        >
+                          <SelectTrigger className="text-xs md:text-sm">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PENDING UPDATE">Menunggu Update</SelectItem>
+                            <SelectItem value="APPROVED">Disetujui</SelectItem>
+                            <SelectItem value="APPROVED KUOTA">Disetujui (Kuota)</SelectItem>
+                            <SelectItem value="ON HOLD">Ditahan</SelectItem>
+                            <SelectItem value="REJECT">Ditolak</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     ) : (
                       <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm ${getStatusConfig(selectedRow.prog_stat).bg} ${getStatusConfig(selectedRow.prog_stat).text}`}>
                         <span className="text-sm">{getStatusConfig(selectedRow.prog_stat).icon}</span>
