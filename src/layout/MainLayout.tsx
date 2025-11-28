@@ -12,14 +12,14 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen w-full flex bg-background relative overflow-hidden">
+    <div className="h-screen w-full flex bg-background relative overflow-hidden">
       <div className="absolute inset-0 gradient-mesh opacity-[0.02] pointer-events-none" />
 
-      <div className="hidden lg:block">
+      <div className="hidden lg:block h-full">
         <Sidebar />
       </div>
 
-      <div className="flex-1 flex flex-col relative z-10">
+      <div className="flex-1 flex flex-col relative z-10 h-full">
         <Navbar />
 
         <main className="flex-1 overflow-auto">
