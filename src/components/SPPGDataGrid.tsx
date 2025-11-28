@@ -591,13 +591,15 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-xs md:text-sm font-semibold text-foreground">Verifikator</Label>
                     {editMode && isSuperUser ? (
                       <Badge variant="secondary" className="text-xs md:text-sm py-1.5 px-3">
                         {selectedRow.reff_attention || "-"}
                       </Badge>
                     ) : (
-                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.reff_attention || "-"}</p>
+                      <>
+                        <Label className="text-xs md:text-sm font-semibold text-foreground">Verifikator</Label>
+                        <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.reff_attention || "-"}</p>
+                      </>
                     )}
                   </div>
                 </div>
