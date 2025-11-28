@@ -214,7 +214,6 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       },
       cell: ({ row }) => {
         const status = (row.getValue("prog_stat") as string) || "PENDING UPDATE";
-        const isSuperUser = userRole === "super_user";
 
         const handleStatusChange = async (newStatus: string) => {
           try {
