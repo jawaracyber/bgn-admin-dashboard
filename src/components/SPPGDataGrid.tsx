@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
@@ -592,11 +593,9 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                   <div className="space-y-2">
                     <Label className="text-xs md:text-sm font-semibold text-foreground">Verifikator</Label>
                     {editMode && isSuperUser ? (
-                      <Input
-                        value={editedData?.reff_attention || ""}
-                        onChange={(e) => setEditedData({ ...editedData!, reff_attention: e.target.value })}
-                        className="text-xs md:text-sm"
-                      />
+                      <Badge variant="secondary" className="text-xs md:text-sm py-1.5 px-3">
+                        {selectedRow.reff_attention || "-"}
+                      </Badge>
                     ) : (
                       <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.reff_attention || "-"}</p>
                     )}
