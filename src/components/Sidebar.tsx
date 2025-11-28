@@ -35,7 +35,7 @@ const Sidebar = () => {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-xl h-full"
+      className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-xl min-h-screen"
     >
       <motion.div
         variants={itemVariants}
