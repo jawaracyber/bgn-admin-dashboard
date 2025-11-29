@@ -595,7 +595,11 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                     {editMode && isSuperUser ? (
                       <Select
                         value={editedData?.reff_attention || ""}
-                        onValueChange={(value) => setEditedData({ ...editedData!, reff_attention: value })}
+                        onValueChange={(value) => {
+                          if (editedData) {
+                            setEditedData({ ...editedData, reff_attention: value });
+                          }
+                        }}
                       >
                         <SelectTrigger className="text-xs md:text-sm">
                           <SelectValue placeholder="Pilih Verifikator" />
