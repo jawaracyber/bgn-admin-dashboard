@@ -591,15 +591,24 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                   </div>
 
                   <div className="space-y-2">
+                    <Label className="text-xs md:text-sm font-semibold text-foreground">Verifikator</Label>
                     {editMode && isSuperUser ? (
-                      <Badge variant="secondary" className="text-xs md:text-sm py-1.5 px-3">
-                        {selectedRow.reff_attention || "-"}
-                      </Badge>
+                      <Select
+                        value={editedData?.reff_attention || ""}
+                        onValueChange={(value) => setEditedData({ ...editedData!, reff_attention: value })}
+                      >
+                        <SelectTrigger className="text-xs md:text-sm">
+                          <SelectValue placeholder="Pilih Verifikator" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="PR07">PR07</SelectItem>
+                          <SelectItem value="SS03">SS03</SelectItem>
+                          <SelectItem value="BR08">BR08</SelectItem>
+                          <SelectItem value="MFS8">MFS8</SelectItem>
+                        </SelectContent>
+                      </Select>
                     ) : (
-                      <>
-                        <Label className="text-xs md:text-sm font-semibold text-foreground">Verifikator</Label>
-                        <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.reff_attention || "-"}</p>
-                      </>
+                      <p className="text-sm md:text-base text-muted-foreground font-medium">{selectedRow.reff_attention || "-"}</p>
                     )}
                   </div>
                 </div>
