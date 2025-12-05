@@ -500,7 +500,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                 ANTRIAN DATA PORTAL BGN
               </Badge>
               <p className="text-xs md:text-sm text-muted-foreground">
-                Estimasi Update data di portal BGN 15 September 2025
+                Estimasi Update data di portal BGN 11 September 2025
               </p>
             </div>
             <div className="space-y-1">
