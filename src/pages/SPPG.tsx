@@ -27,6 +27,7 @@ const fetchSPPGData = async (): Promise<SPPGRow[]> => {
     provinsi: item.provinsi,
     alamat: item.alamat || "-",
     reff_attention: item.reff_attention || "-",
+    updated_at: item.updated_at,
   }));
 };
 

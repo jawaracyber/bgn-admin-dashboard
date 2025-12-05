@@ -43,6 +43,7 @@ export interface SPPGRow {
   provinsi: string;
   alamat: string;
   reff_attention: string;
+  updated_at?: string;
 }
 
 interface SPPGDataGridProps {
@@ -104,6 +105,21 @@ const getStatusColor = (status: string) => {
     case "PENDING UPDATE":
     default:
       return "bg-[#f1f5f9] text-slate-600";
+  }
+};
+
+const getEstimationText = (updatedAt?: string) => {
+  if (!updatedAt) {
+    return "Estimasi Update data di portal BGN 12 Desember 2025";
+  }
+
+  const updateDate = new Date(updatedAt);
+  const cutoffDate = new Date('2025-11-22T00:00:00Z');
+
+  if (updateDate < cutoffDate) {
+    return "Estimasi Update data di portal BGN 12 Desember 2025";
+  } else {
+    return "Estimasi Update data di portal BGN 22 Desember 2025";
   }
 };
 
@@ -500,7 +516,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
                 ANTRIAN DATA PORTAL BGN
               </Badge>
               <p className="text-xs md:text-sm text-muted-foreground">
-                Estimasi Update data di portal BGN 11 September 2025
+                {getEstimationText(selectedRow?.updated_at)}
               </p>
             </div>
             <div className="space-y-1">
