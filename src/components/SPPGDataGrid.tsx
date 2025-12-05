@@ -495,6 +495,14 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
         <DialogContent className="sm:max-w-[90vw] md:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="space-y-3 pb-4 border-b">
+            <div className="space-y-3">
+              <Badge className="bg-blue-500 text-white hover:bg-blue-600 w-fit text-xs md:text-sm">
+                ANTRIAN DATA PORTAL BGN
+              </Badge>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                Estimasi Update data di portal BGN 15 September 2025
+              </p>
+            </div>
             <div className="space-y-1">
               <p className="text-xs md:text-sm text-muted-foreground font-medium">ID SPPG</p>
               <DialogTitle className="text-xl md:text-2xl font-bold text-primary">#{selectedRow?.id}</DialogTitle>
