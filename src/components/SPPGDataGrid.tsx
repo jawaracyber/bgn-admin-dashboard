@@ -115,9 +115,13 @@ const getEstimationText = (updatedAt?: string) => {
 
   const updateDate = new Date(updatedAt);
   const cutoffDate = new Date('2025-11-22T00:00:00Z');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   if (updateDate < cutoffDate) {
     return "Estimasi Update data di portal BGN 12 Desember 2025";
+  } else if (updateDate >= today) {
+    return "Estimasi Update data di portal BGN 27 Desember 2025";
   } else {
     return "Estimasi Update data di portal BGN 22 Desember 2025";
   }
