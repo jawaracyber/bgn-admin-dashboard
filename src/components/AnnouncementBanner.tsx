@@ -93,13 +93,13 @@ export const AnnouncementBanner = () => {
       };
     } else {
       return {
-        gradient: 'from-cyan-500/20 via-blue-500/20 to-teal-500/20',
-        border: 'border-cyan-400/30',
-        bgOverlay: 'from-cyan-500/10',
-        bgBlur: 'bg-cyan-400',
-        badgeBg: 'bg-cyan-600',
-        buttonBg: 'bg-white text-cyan-600 hover:bg-cyan-50',
-        shine: 'from-cyan-500 via-blue-500 to-cyan-500',
+        gradient: 'from-emerald-500/20 via-green-600/20 to-teal-600/20',
+        border: 'border-emerald-400/30',
+        bgOverlay: 'from-emerald-500/10',
+        bgBlur: 'bg-emerald-500',
+        badgeBg: 'bg-emerald-700',
+        buttonBg: 'bg-white text-emerald-700 hover:bg-emerald-50',
+        shine: 'from-emerald-500 via-green-500 to-emerald-500',
         icon: AlertTriangle,
       };
     }
