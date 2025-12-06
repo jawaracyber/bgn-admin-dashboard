@@ -68,8 +68,8 @@ export const AnnouncementBanner = () => {
     });
   };
 
-  const getAnnouncementStyle = (title: string) => {
-    if (title === 'PENTING') {
+  const getAnnouncementStyle = (title: string, index: number) => {
+    if (title === 'PENTING' || index === 0) {
       return {
         gradient: 'from-red-500/20 via-red-600/20 to-orange-500/20',
         border: 'border-red-400/30',
@@ -80,7 +80,7 @@ export const AnnouncementBanner = () => {
         shine: 'from-red-500 via-orange-500 to-red-500',
         icon: Megaphone,
       };
-    } else {
+    } else if (index === 1) {
       return {
         gradient: 'from-amber-500/20 via-yellow-500/20 to-orange-500/20',
         border: 'border-amber-400/30',
@@ -90,6 +90,17 @@ export const AnnouncementBanner = () => {
         buttonBg: 'bg-white text-amber-600 hover:bg-amber-50',
         shine: 'from-amber-500 via-yellow-500 to-amber-500',
         icon: AlertCircle,
+      };
+    } else {
+      return {
+        gradient: 'from-cyan-500/20 via-blue-500/20 to-teal-500/20',
+        border: 'border-cyan-400/30',
+        bgOverlay: 'from-cyan-500/10',
+        bgBlur: 'bg-cyan-400',
+        badgeBg: 'bg-cyan-600',
+        buttonBg: 'bg-white text-cyan-600 hover:bg-cyan-50',
+        shine: 'from-cyan-500 via-blue-500 to-cyan-500',
+        icon: AlertTriangle,
       };
     }
   };
@@ -104,7 +115,7 @@ export const AnnouncementBanner = () => {
     <>
       <div className="space-y-4">
         {visibleAnnouncements.map((announcement, index) => {
-          const style = getAnnouncementStyle(announcement.title);
+          const style = getAnnouncementStyle(announcement.title, index);
           const Icon = style.icon;
 
           return (

@@ -1,5 +1,5 @@
 import { NavLink } from "@/components/NavLink";
-import { LayoutDashboard, FileText, MapPin, DollarSign } from "lucide-react";
+import { LayoutDashboard, FileText, MapPin, DollarSign, Heart, GraduationCap, Leaf, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -8,6 +8,10 @@ const menuItems = [
   { title: "Badan Gizi Nasional", path: "/sppg", icon: FileText },
   { title: "Badan Pertanahan Nasional", path: "/restricted-bpn", icon: MapPin },
   { title: "Badan Perpajakan", path: "/restricted-tax", icon: DollarSign },
+  { title: "Dinas Sosial", path: "/restricted-dinsos", icon: Heart },
+  { title: "Dinas Pendidikan", path: "/restricted-disdik", icon: GraduationCap },
+  { title: "Dinas Lingkungan Hidup", path: "/restricted-dlh", icon: Leaf },
+  { title: "Badan Narkotika Nasional", path: "/bnn", icon: ShieldCheck },
 ];
 
 const containerVariants = {

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="bnnGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="100" cy="100" r="95" fill="url(#bnnGradient)" opacity="0.1"/>
+  <circle cx="100" cy="100" r="85" fill="none" stroke="url(#bnnGradient)" stroke-width="3"/>
+
+  <path d="M100 30 L130 50 L130 90 L100 110 L70 90 L70 50 Z" fill="url(#bnnGradient)" opacity="0.2"/>
+
+  <path d="M100 40 L120 55 L120 85 L100 100 L80 85 L80 55 Z" fill="none" stroke="url(#bnnGradient)" stroke-width="4" stroke-linejoin="round"/>
+
+  <circle cx="100" cy="70" r="15" fill="url(#bnnGradient)"/>
+  <path d="M90 70 L95 75 L110 60" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M60 120 L60 160 L75 160 L75 145 L85 145 L85 160 L95 160 L95 120 L60 120 Z M75 130 L75 140 L85 140 L85 130 Z" fill="url(#bnnGradient)"/>
+
+  <path d="M105 120 L105 160 L135 160 L135 150 L115 150 L115 145 L130 145 L130 135 L115 135 L115 130 L135 130 L135 120 Z" fill="url(#bnnGradient)"/>
+
+  <circle cx="100" cy="180" r="8" fill="#dc2626"/>
+  <path d="M95 180 L100 185 L105 180" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
