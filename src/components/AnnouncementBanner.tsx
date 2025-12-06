@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X, Megaphone } from 'lucide-react';
+import { AlertTriangle, X, Megaphone, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -24,7 +24,7 @@ export const AnnouncementBanner = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -55,8 +55,8 @@ export const AnnouncementBanner = () => {
     setIsOpen(true);
   };
 
-  const handleDismiss = () => {
-    setIsDismissed(true);
+  const handleDismiss = (id: string) => {
+    setDismissedIds(prev => new Set([...prev, id]));
   };
 
   const formatContent = (content: string) => {
@@ -68,95 +68,130 @@ export const AnnouncementBanner = () => {
     });
   };
 
-  if (isLoading || announcements.length === 0 || isDismissed) {
+  const getAnnouncementStyle = (title: string) => {
+    if (title === 'PENTING') {
+      return {
+        gradient: 'from-red-500/20 via-red-600/20 to-orange-500/20',
+        border: 'border-red-400/30',
+        bgOverlay: 'from-red-500/10',
+        bgBlur: 'bg-red-400',
+        badgeBg: 'bg-red-600',
+        buttonBg: 'bg-white text-red-600 hover:bg-red-50',
+        shine: 'from-red-500 via-orange-500 to-red-500',
+        icon: Megaphone,
+      };
+    } else {
+      return {
+        gradient: 'from-amber-500/20 via-yellow-500/20 to-orange-500/20',
+        border: 'border-amber-400/30',
+        bgOverlay: 'from-amber-500/10',
+        bgBlur: 'bg-amber-400',
+        badgeBg: 'bg-amber-600',
+        buttonBg: 'bg-white text-amber-600 hover:bg-amber-50',
+        shine: 'from-amber-500 via-yellow-500 to-amber-500',
+        icon: AlertCircle,
+      };
+    }
+  };
+
+  const visibleAnnouncements = announcements.filter(a => !dismissedIds.has(a.id));
+
+  if (isLoading || visibleAnnouncements.length === 0) {
     return null;
   }
 
-  const announcement = announcements[0];
-
   return (
     <>
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5 }}
-          className="relative mb-8"
-        >
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500/20 via-red-600/20 to-orange-500/20 backdrop-blur-xl border border-red-400/30 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent" />
+      <div className="space-y-4">
+        {visibleAnnouncements.map((announcement, index) => {
+          const style = getAnnouncementStyle(announcement.title);
+          const Icon = style.icon;
 
-            <div className="relative p-6 md:p-8">
-              <button
-                onClick={handleDismiss}
-                className="absolute top-4 right-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 group"
-                aria-label="Dismiss announcement"
+          return (
+            <AnimatePresence key={announcement.id}>
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative"
               >
-                <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-200" />
-              </button>
+                <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} backdrop-blur-xl border ${style.border} shadow-2xl`}>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${style.bgOverlay} to-transparent`} />
 
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 5, -5, 0]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 3
-                  }}
-                  className="flex-shrink-0"
-                >
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-red-400 rounded-full blur-xl opacity-50 animate-pulse" />
-                    <div className="relative bg-white/20 p-4 rounded-full backdrop-blur-sm">
-                      <Megaphone className="w-8 h-8 text-white" />
+                  <div className="relative p-6 md:p-8">
+                    <button
+                      onClick={() => handleDismiss(announcement.id)}
+                      className="absolute top-4 right-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 group"
+                      aria-label="Dismiss announcement"
+                    >
+                      <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-200" />
+                    </button>
+
+                    <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          rotate: [0, 5, -5, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          repeatDelay: 3
+                        }}
+                        className="flex-shrink-0"
+                      >
+                        <div className="relative">
+                          <div className={`absolute inset-0 ${style.bgBlur} rounded-full blur-xl opacity-50 animate-pulse`} />
+                          <div className="relative bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                            <Icon className="w-8 h-8 text-white" />
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full ${style.badgeBg} text-white text-xs font-bold uppercase tracking-wider shadow-lg`}>
+                            <AlertTriangle className="w-3 h-3" />
+                            {announcement.title}
+                          </span>
+                        </div>
+
+                        <h3 className="text-lg md:text-xl font-bold text-white leading-tight">
+                          {announcement.short_description}
+                        </h3>
+
+                        <p className="text-sm text-white/80">
+                          Klik tombol di bawah untuk melihat detail lengkap
+                        </p>
+                      </div>
+
+                      <Button
+                        onClick={() => handleViewDetails(announcement)}
+                        className={`flex-shrink-0 ${style.buttonBg} font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105`}
+                      >
+                        Lihat Detail
+                      </Button>
                     </div>
                   </div>
-                </motion.div>
 
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg">
-                      <AlertTriangle className="w-3 h-3" />
-                      {announcement.title}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg md:text-xl font-bold text-white leading-tight">
-                    {announcement.short_description}
-                  </h3>
-
-                  <p className="text-sm text-white/80">
-                    Klik tombol di bawah untuk melihat detail lengkap perubahan jadwal
-                  </p>
+                  <motion.div
+                    className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${style.shine}`}
+                    animate={{
+                      x: ['-100%', '100%'],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
+                  />
                 </div>
-
-                <Button
-                  onClick={() => handleViewDetails(announcement)}
-                  className="flex-shrink-0 bg-white text-red-600 hover:bg-red-50 font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                >
-                  Lihat Detail
-                </Button>
-              </div>
-            </div>
-
-            <motion.div
-              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"
-              animate={{
-                x: ['-100%', '100%'],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-            />
-          </div>
-        </motion.div>
-      </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          );
+        })}
+      </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
