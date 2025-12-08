@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, ArrowUpDown, ArrowUp, ArrowDown, Calendar } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -108,23 +108,8 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const getEstimationText = (updatedAt?: string) => {
-  if (!updatedAt) {
-    return "Estimasi Update data di portal BGN 12 Desember 2025";
-  }
-
-  const updateDate = new Date(updatedAt);
-  const cutoffDate = new Date('2025-11-22T00:00:00Z');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (updateDate < cutoffDate) {
-    return "Estimasi Update data di portal BGN 12 Desember 2025";
-  } else if (updateDate >= today) {
-    return "Estimasi Update data di portal BGN 27 Desember 2025";
-  } else {
-    return "Estimasi Update data di portal BGN 22 Desember 2025";
-  }
+const getEstimationText = () => {
+  return "Estimasi Update data di portal BGN akan dilakukan serentak pada 28 Desember 2025";
 };
 
 export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
@@ -514,16 +499,47 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
 
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
         <DialogContent className="sm:max-w-[90vw] md:max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader className="space-y-3 pb-4 border-b">
-            <div className="space-y-3">
-              <Badge className="bg-blue-500 text-white hover:bg-blue-600 w-fit text-xs md:text-sm">
-                ANTRIAN DATA PORTAL BGN
-              </Badge>
-              <p className="text-xs md:text-sm text-muted-foreground">
-                {getEstimationText(selectedRow?.updated_at)}
-              </p>
-            </div>
-            <div className="space-y-1">
+          <DialogHeader className="space-y-4 pb-4 border-b">
+            <motion.div
+              className="relative bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-xl p-4 md:p-6 border-4 border-amber-600 shadow-xl"
+              animate={{
+                boxShadow: [
+                  "0 10px 40px rgba(251, 146, 60, 0.4)",
+                  "0 10px 60px rgba(251, 146, 60, 0.6)",
+                  "0 10px 40px rgba(251, 146, 60, 0.4)"
+                ]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <div className="flex items-start gap-3 md:gap-4">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, 0, -5, 0]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Calendar className="w-7 h-7 md:w-9 md:h-9 text-white flex-shrink-0" />
+                </motion.div>
+                <div className="flex-1 space-y-2">
+                  <Badge className="bg-white text-orange-700 hover:bg-white font-bold text-xs md:text-sm shadow-md">
+                    PERHATIAN PENTING
+                  </Badge>
+                  <p className="text-base md:text-lg lg:text-xl font-bold text-white leading-relaxed drop-shadow-lg">
+                    {getEstimationText()}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+            <div className="space-y-1 pt-2">
               <p className="text-xs md:text-sm text-muted-foreground font-medium">ID SPPG</p>
               <DialogTitle className="text-xl md:text-2xl font-bold text-primary">#{selectedRow?.id}</DialogTitle>
             </div>
