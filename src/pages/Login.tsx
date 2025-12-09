@@ -28,7 +28,7 @@ const Login = () => {
       if (error) throw error;
 
       toast.success("Login berhasil!");
-      navigate("/main");
+      navigate("/");
     } catch (error: any) {
       toast.error(error.message || "Terjadi kesalahan saat login");
     } finally {

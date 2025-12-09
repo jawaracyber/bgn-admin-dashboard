@@ -17,7 +17,6 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 const Login = lazy(() => import("@/pages/Login"));
 const RestrictedAccess = lazy(() => import("@/pages/RestrictedAccess"));
 const BNN = lazy(() => import("@/pages/BNN"));
-const ServerError = lazy(() => import("@/pages/ServerError"));
 
 const queryClient = new QueryClient();
 
@@ -36,19 +35,18 @@ const App = () => (
         <AuthProvider>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
-              <Route path="/" element={<ServerError />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/main" element={<Navigate to="/main/general" replace />} />
-              <Route path="/main/general" element={<ProtectedRoute><MainLayout><General /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/sppg" element={<ProtectedRoute><MainLayout><SPPG /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/restricted-bpn" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/restricted-tax" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/restricted-dinsos" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/restricted-disdik" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/restricted-dlh" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/bnn" element={<ProtectedRoute><MainLayout><BNN /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
-              <Route path="/main/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+              <Route path="/" element={<Navigate to="/general" replace />} />
+              <Route path="/general" element={<ProtectedRoute><MainLayout><General /></MainLayout></ProtectedRoute>} />
+              <Route path="/sppg" element={<ProtectedRoute><MainLayout><SPPG /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-bpn" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-tax" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-dinsos" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-disdik" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
+              <Route path="/restricted-dlh" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
+              <Route path="/bnn" element={<ProtectedRoute><MainLayout><BNN /></MainLayout></ProtectedRoute>} />
+              <Route path="/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
