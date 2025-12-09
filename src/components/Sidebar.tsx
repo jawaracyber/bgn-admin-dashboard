@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
-  { title: "Dashboard Utama", path: "/general", icon: LayoutDashboard },
-  { title: "Badan Gizi Nasional", path: "/sppg", icon: FileText },
-  { title: "Badan Pertanahan Nasional", path: "/restricted-bpn", icon: MapPin },
-  { title: "Badan Perpajakan", path: "/restricted-tax", icon: DollarSign },
-  { title: "Dinas Sosial", path: "/restricted-dinsos", icon: Heart },
-  { title: "Dinas Pendidikan", path: "/restricted-disdik", icon: GraduationCap },
-  { title: "Dinas Lingkungan Hidup", path: "/restricted-dlh", icon: Leaf },
-  { title: "Badan Narkotika Nasional", path: "/bnn", icon: ShieldCheck },
+  { title: "Dashboard Utama", path: "/main/general", icon: LayoutDashboard },
+  { title: "Badan Gizi Nasional", path: "/main/sppg", icon: FileText },
+  { title: "Badan Pertanahan Nasional", path: "/main/restricted-bpn", icon: MapPin },
+  { title: "Badan Perpajakan", path: "/main/restricted-tax", icon: DollarSign },
+  { title: "Dinas Sosial", path: "/main/restricted-dinsos", icon: Heart },
+  { title: "Dinas Pendidikan", path: "/main/restricted-disdik", icon: GraduationCap },
+  { title: "Dinas Lingkungan Hidup", path: "/main/restricted-dlh", icon: Leaf },
+  { title: "Badan Narkotika Nasional", path: "/main/bnn", icon: ShieldCheck },
 ];
 
 const containerVariants = {
