@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [fullName, setFullName] = useState('');
   const [position, setPosition] = useState('');
 
-  const fetchUserRole = async (userId: string) => {
+  const fetchUserRole = async (userId: string, retryCount = 0) => {
     try {
       const { data, error } = await supabase
         .from('user_roles')
@@ -56,7 +56,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .eq('user_id', userId)
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching user role:', error);
+        throw error;
+      }
+
+      // If no role found and this is first retry, wait and try again
+      // This handles case where trigger hasn't completed yet
+      if (!data && retryCount < 2) {
+        console.log('User role not found, retrying...', retryCount + 1);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return fetchUserRole(userId, retryCount + 1);
+      }
+
+      if (!data) {
+        console.warn('User role not found after retries, using default');
+        // Create a default role entry for this user
+        try {
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData.user) {
+            await supabase.from('user_roles').insert({
+              user_id: userId,
+              email: userData.user.email || '',
+              role: 'USER_GRANTED',
+              full_name: 'User',
+              position: 'Staff'
+            });
+            console.log('Created default user role');
+          }
+        } catch (insertError) {
+          console.error('Failed to create default user role:', insertError);
+        }
+      }
 
       const role = (data?.role as UserRole) || 'USER_GRANTED';
       setUserRole(role);
@@ -65,7 +96,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setFullName(data?.full_name || 'User');
       setPosition(data?.position || 'Staff');
     } catch (error) {
-      console.error('Error fetching user role:', error);
+      console.error('Error in fetchUserRole:', error);
+      // Set safe defaults
       setUserRole('USER_GRANTED');
       setIsSuperUser(false);
       setIsReadOnly(true);

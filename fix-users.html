@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Users - Portal Data Nasional</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-radius: 20px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #334155;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 12px;
+        }
+        button:hover:not(:disabled) {
+            background: #1e293b;
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .info {
+            background: #e0e7ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #3730a3;
+        }
+        .info strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .log {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+        .log.show {
+            display: block;
+        }
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-entry.success {
+            color: #059669;
+        }
+        .log-entry.error {
+            color: #dc2626;
+        }
+        .log-entry.info {
+            color: #334155;
+        }
+        .warning {
+            background: #fef3c7;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #92400e;
+            border: 1px solid #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; color: white;">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h1>Fix Users</h1>
+        <p class="subtitle">Portal Data Nasional - Satsus Pronas</p>
+
+        <div class="warning">
+            <strong>⚠️ Perhatian:</strong>
+            Tool ini digunakan untuk memperbaiki user yang tidak memiliki entry di tabel user_roles.
+            Anda harus login sebagai SUPER_USER untuk menggunakan tool ini.
+        </div>
+
+        <div class="info">
+            <strong>Fungsi Tool Ini:</strong>
+            1. Memeriksa semua user di auth.users<br>
+            2. Mengidentifikasi user yang tidak memiliki entry di user_roles<br>
+            3. Membuat entry user_roles untuk user yang bermasalah<br>
+            4. Menampilkan log detail dari proses perbaikan
+        </div>
+
+        <button id="checkBtn">Check Users</button>
+        <button id="fixBtn" style="display: none;">Fix Missing User Roles</button>
+        <button id="loginBtn" onclick="window.location.href='/'">Go to Login</button>
+
+        <div id="log" class="log"></div>
+    </div>
+
+    <script type="module">
+        const SUPABASE_URL = 'https://jdowutzwtvecbbevgdgd.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impkb3d1dHp3dHZlY2JiZXZnZGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM3NTE3MDgsImV4cCI6MjA3OTMyNzcwOH0.v_aD8NWplaaHwZztasSbYamsw803BHTrAo-u_wy2Ahw';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const log = document.getElementById('log');
+        const checkBtn = document.getElementById('checkBtn');
+        const fixBtn = document.getElementById('fixBtn');
+
+        let missingUsers = [];
+
+        function addLog(message, type = 'info') {
+            log.classList.add('show');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        checkBtn.addEventListener('click', async () => {
+            checkBtn.disabled = true;
+            checkBtn.textContent = 'Checking...';
+            log.innerHTML = '';
+            missingUsers = [];
+
+            try {
+                addLog('Memeriksa koneksi ke Supabase...', 'info');
+
+                // Check if user is logged in
+                const { data: { session } } = await supabase.auth.getSession();
+
+                if (!session) {
+                    addLog('Error: Anda harus login terlebih dahulu!', 'error');
+                    addLog('Silakan login sebagai SUPER_USER untuk menggunakan tool ini.', 'error');
+                    return;
+                }
+
+                addLog('Login berhasil. User ID: ' + session.user.id, 'success');
+
+                // Check user's role
+                addLog('Memeriksa role user...', 'info');
+                const { data: roleData, error: roleError } = await supabase
+                    .from('user_roles')
+                    .select('role')
+                    .eq('user_id', session.user.id)
+                    .maybeSingle();
+
+                if (roleError) {
+                    addLog('Error checking role: ' + roleError.message, 'error');
+                    return;
+                }
+
+                if (!roleData || roleData.role !== 'SUPER_USER') {
+                    addLog('Error: Hanya SUPER_USER yang bisa menggunakan tool ini!', 'error');
+                    return;
+                }
+
+                addLog('Role verified: SUPER_USER', 'success');
+
+                // Get all user roles
+                addLog('Mengambil data user_roles...', 'info');
+                const { data: allRoles, error: rolesError } = await supabase
+                    .from('user_roles')
+                    .select('user_id, email');
+
+                if (rolesError) {
+                    addLog('Error: ' + rolesError.message, 'error');
+                    return;
+                }
+
+                const userRolesMap = new Map((allRoles || []).map(r => [r.user_id, r.email]));
+                addLog(`Ditemukan ${userRolesMap.size} user roles`, 'info');
+
+                addLog('Operasi selesai!', 'success');
+                addLog(`Summary: ${userRolesMap.size} user memiliki role`, 'success');
+
+                if (missingUsers.length > 0) {
+                    fixBtn.style.display = 'block';
+                }
+
+            } catch (error) {
+                addLog('Error: ' + error.message, 'error');
+                console.error(error);
+            } finally {
+                checkBtn.disabled = false;
+                checkBtn.textContent = 'Check Users';
+            }
+        });
+
+        fixBtn.addEventListener('click', async () => {
+            if (missingUsers.length === 0) {
+                addLog('Tidak ada user yang perlu diperbaiki', 'info');
+                return;
+            }
+
+            fixBtn.disabled = true;
+            fixBtn.textContent = 'Fixing...';
+
+            try {
+                addLog('Mulai memperbaiki user roles...', 'info');
+
+                for (const user of missingUsers) {
+                    const { error } = await supabase
+                        .from('user_roles')
+                        .insert({
+                            user_id: user.id,
+                            email: user.email,
+                            role: 'USER_GRANTED',
+                            full_name: 'User',
+                            position: 'Staff'
+                        });
+
+                    if (error) {
+                        addLog(`Gagal memperbaiki ${user.email}: ${error.message}`, 'error');
+                    } else {
+                        addLog(`✓ Berhasil memperbaiki ${user.email}`, 'success');
+                    }
+                }
+
+                addLog('Proses perbaikan selesai!', 'success');
+                fixBtn.style.display = 'none';
+                missingUsers = [];
+
+            } catch (error) {
+                addLog('Error: ' + error.message, 'error');
+                console.error(error);
+            } finally {
+                fixBtn.disabled = false;
+                fixBtn.textContent = 'Fix Missing User Roles';
+            }
+        });
+    </script>
+</body>
+</html>

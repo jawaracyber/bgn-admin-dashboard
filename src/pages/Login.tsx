@@ -20,17 +20,35 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Login error:', error);
+
+        // Handle specific error cases with Indonesian messages
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('Email atau password salah. Pastikan kredensial Anda benar.');
+        } else if (error.message.includes('Email not confirmed')) {
+          throw new Error('Email belum dikonfirmasi. Silakan periksa inbox Anda.');
+        } else if (error.message.includes('User not found')) {
+          throw new Error('User tidak ditemukan. Silakan daftar terlebih dahulu.');
+        }
+
+        throw error;
+      }
+
+      if (!data.user) {
+        throw new Error('Login gagal. Silakan coba lagi.');
+      }
 
       toast.success("Login berhasil!");
       navigate("/");
     } catch (error: any) {
-      toast.error(error.message || "Terjadi kesalahan saat login");
+      console.error('Login exception:', error);
+      toast.error(error.message || "Terjadi kesalahan saat login. Silakan coba lagi.");
     } finally {
       setIsLoading(false);
     }

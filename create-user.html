@@ -187,18 +187,41 @@
             submitBtn.textContent = 'Creating...';
 
             try {
+                // Sign up the user
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
+                    options: {
+                        data: {
+                            full_name: 'User',
+                            position: 'Staff'
+                        }
+                    }
                 });
 
-                if (error) throw error;
+                if (error) {
+                    // Handle specific error cases
+                    if (error.message.includes('User already registered')) {
+                        throw new Error('User dengan email ini sudah terdaftar. Silakan login.');
+                    }
+                    throw error;
+                }
 
-                showMessage('✓ User created successfully! You can now login.', 'success');
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 2000);
+                if (data.user) {
+                    showMessage('✓ User berhasil dibuat! Anda bisa login sekarang.', 'success');
+
+                    // Wait a bit for trigger to complete
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // Redirect to login
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                } else {
+                    throw new Error('Gagal membuat user. Silakan coba lagi.');
+                }
             } catch (error) {
+                console.error('Signup error:', error);
                 showMessage('✗ Error: ' + error.message, 'error');
             } finally {
                 submitBtn.disabled = false;
