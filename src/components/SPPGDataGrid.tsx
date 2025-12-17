@@ -43,6 +43,7 @@ export interface SPPGRow {
   provinsi: string;
   alamat: string;
   reff_attention: string;
+  progress: string;
   updated_at?: string;
 }
 
@@ -315,14 +316,14 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
       ),
     },
     {
-      accessorKey: "reff_attention",
+      accessorKey: "progress",
       header: ({ column }) => {
         return (
           <div
             className="flex items-center gap-1 cursor-pointer select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            <span className="text-[10px] sm:text-xs md:text-sm">VERIFIKATOR</span>
+            <span className="text-[10px] sm:text-xs md:text-sm">PROGRESS</span>
             {column.getIsSorted() === "asc" ? (
               <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             ) : column.getIsSorted() === "desc" ? (
@@ -334,8 +335,8 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
         );
       },
       cell: ({ row }) => (
-        <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm">
-          {row.getValue("reff_attention") || "-"}
+        <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm font-medium">
+          {row.getValue("progress") || "PERSIAPAN UPDATE"}
         </div>
       ),
     },

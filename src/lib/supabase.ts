@@ -19,6 +19,7 @@ export interface SPPGData {
   status?: string;
   prog_stat?: string;
   reff_attention?: string;
+  progress?: string;
   created_at?: string;
   updated_at?: string;
 }
