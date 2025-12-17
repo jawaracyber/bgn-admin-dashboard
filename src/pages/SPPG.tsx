@@ -9,6 +9,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import CardKPI from "@/components/CardKPI";
 import { useAuth } from "@/contexts/AuthContext";
+import { calculateKPIs, formatPenerimaManfaat, formatSPPGNumber } from "@/lib/kpiCalculations";
 
 const fetchSPPGData = async (): Promise<SPPGRow[]> => {
   const { data, error } = await supabase
@@ -41,18 +42,20 @@ const SPPG = () => {
     refetchOnWindowFocus: true,
   });
 
+  const { data: kpiData, isLoading: kpiLoading } = useQuery({
+    queryKey: ['kpi-calculations'],
+    queryFn: calculateKPIs,
+    refetchOnWindowFocus: true,
+  });
+
   const handleStatusUpdate = () => {
     queryClient.invalidateQueries({ queryKey: ['sppg-data'] });
+    queryClient.invalidateQueries({ queryKey: ['kpi-calculations'] });
     toast.success('Data berhasil dimuat ulang');
   };
 
-  const approvedCount = sppgData.filter(item =>
-    item.prog_stat === "APPROVED" || item.prog_stat === "APPROVED KUOTA"
-  ).length;
-
-  const pendingCount = sppgData.filter(item =>
-    item.prog_stat === "PENDING UPDATE"
-  ).length;
+  const approvedCount = kpiData?.approvedCount || 0;
+  const pendingCount = kpiData?.pendingCount || 0;
 
   return (
     <div className="space-y-6 md:space-y-8 p-4 md:p-6 lg:p-8">
@@ -87,7 +90,7 @@ const SPPG = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <CardKPI
           title="Total SPPG"
-          value={sppgData.length.toLocaleString()}
+          value={kpiData ? formatSPPGNumber(kpiData.totalSPPG) : "0"}
           icon={Database}
           trend="+12.5%"
           trendUp={true}
@@ -96,7 +99,7 @@ const SPPG = () => {
         />
         <CardKPI
           title="Penerima Manfaat"
-          value="41,9 Juta"
+          value={kpiData ? formatPenerimaManfaat(kpiData.totalPenerimaManfaat) : "0"}
           icon={Users}
           trend="+8.3%"
           trendUp={true}
@@ -105,7 +108,7 @@ const SPPG = () => {
         />
         <CardKPI
           title="SPPG Beroperasi"
-          value="15.433"
+          value={kpiData ? formatSPPGNumber(kpiData.totalSPPGBeroperasi) : "0"}
           icon={Building2}
           trend="+5.2%"
           trendUp={true}
@@ -114,7 +117,7 @@ const SPPG = () => {
         />
         <CardKPI
           title="SPPG Disetujui"
-          value={approvedCount.toLocaleString()}
+          value={kpiData ? formatSPPGNumber(approvedCount) : "0"}
           icon={TrendingUp}
           trend={`${pendingCount} Pending`}
           trendUp={false}
@@ -123,7 +126,7 @@ const SPPG = () => {
         />
       </div>
 
-      {loading ? (
+      {(loading || kpiLoading) ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
