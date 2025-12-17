@@ -38,13 +38,13 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Navigate to="/general" replace />} />
               <Route path="/general" element={<ProtectedRoute><MainLayout><General /></MainLayout></ProtectedRoute>} />
-              <Route path="/sppg" element={<ProtectedRoute><MainLayout><SPPG /></MainLayout></ProtectedRoute>} />
+              <Route path="/sppg" element={<ProtectedRoute requireSuperUser={true}><MainLayout><SPPG /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-bpn" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-tax" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-dinsos" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-disdik" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-dlh" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/bnn" element={<ProtectedRoute requireSuperUser={true}><MainLayout><BNN /></MainLayout></ProtectedRoute>} />
+              <Route path="/bnn" element={<ProtectedRoute><MainLayout><BNN /></MainLayout></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
