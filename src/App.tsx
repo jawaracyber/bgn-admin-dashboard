@@ -44,7 +44,7 @@ const App = () => (
               <Route path="/restricted-dinsos" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-disdik" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
               <Route path="/restricted-dlh" element={<ProtectedRoute><MainLayout><RestrictedAccess /></MainLayout></ProtectedRoute>} />
-              <Route path="/bnn" element={<ProtectedRoute><MainLayout><BNN /></MainLayout></ProtectedRoute>} />
+              <Route path="/bnn" element={<ProtectedRoute requireSuperUser={true}><MainLayout><BNN /></MainLayout></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
