@@ -4,7 +4,6 @@ import ChartStacked from "@/components/ChartStacked";
 import ChartPie from "@/components/ChartPie";
 import ChartLine from "@/components/ChartLine";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
-import { AttendanceConfirmation } from "@/components/AttendanceConfirmation";
 import { DollarSign, TrendingUp, FileText, CheckCircle, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { motion } from "framer-motion";
@@ -69,8 +68,6 @@ const General = () => {
       </motion.div>
 
       <AnnouncementBanner />
-
-      <AttendanceConfirmation />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <CardKPI
