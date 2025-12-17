@@ -1,6 +1,7 @@
 import { SPPGDataGrid, type SPPGRow } from "@/components/SPPGDataGrid";
 import { AddSPPGDialog } from "@/components/AddSPPGDialog";
 import { UploadCSVDialog } from "@/components/UploadCSVDialog";
+import { ExportExcelButton } from "@/components/ExportExcelButton";
 import { supabase, type SPPGData } from "@/lib/supabase";
 import { Loader2, Database, Users, Building2, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
@@ -124,6 +125,15 @@ const SPPG = () => {
           delay={0.4}
         />
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="flex justify-end"
+      >
+        <ExportExcelButton />
+      </motion.div>
 
       {(loading || kpiLoading) ? (
         <motion.div

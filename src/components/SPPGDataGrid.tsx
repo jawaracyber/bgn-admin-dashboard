@@ -334,11 +334,24 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
           </div>
         );
       },
-      cell: ({ row }) => (
-        <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm font-medium">
-          {row.getValue("progress") || "PERSIAPAN UPDATE"}
-        </div>
-      ),
+      cell: ({ row }) => {
+        const progress = row.getValue("progress") as string || "PERSIAPAN UPDATE";
+        const isPersiapan = progress.toUpperCase() === "PERSIAPAN UPDATE";
+
+        return (
+          <div className="flex items-center gap-1">
+            {isPersiapan ? (
+              <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-[9px] sm:text-[10px] md:text-xs px-2 py-0.5 shadow-md hover:shadow-lg hover:from-amber-600 hover:to-orange-700 transition-all duration-300 animate-pulse">
+                {progress}
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="text-[9px] sm:text-[10px] md:text-xs font-medium">
+                {progress}
+              </Badge>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
