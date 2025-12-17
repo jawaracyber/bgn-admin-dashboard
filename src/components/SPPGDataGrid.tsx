@@ -195,7 +195,7 @@ export const SPPGDataGrid = ({ data, onStatusUpdate }: SPPGDataGridProps) => {
         );
       },
       cell: ({ row }) => (
-        <div className="font-medium text-foreground text-[10px] sm:text-xs md:text-sm truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">
+        <div className="font-medium text-foreground text-[10px] sm:text-xs md:text-sm truncate max-w-[50px] sm:max-w-[80px] md:max-w-[120px] lg:max-w-[150px]">
           {row.getValue("nama_sppg")}
         </div>
       ),
